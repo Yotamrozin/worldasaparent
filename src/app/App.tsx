@@ -33,6 +33,7 @@ import hsGallery4 from "@/imports/04Homescape-1/a559f69a08fe7846f0d04fdb615bc651
 import hsGalleryLarge from "@/imports/04Homescape-1/42968b4612124e72b9c4e415eb51c6b5d546b166.png";
 import hsVideoThumb1 from "@/imports/04Homescape-1/yt-NjqbatBl7vs.jpg";
 import hsVideoThumb2 from "@/imports/04Homescape-1/yt-tEccUh0s3mI.jpg";
+import hsGallery451 from "@/imports/04Homescape-1/gallery-451.jpg";
 
 // Creative Experience
 import yotamSnapshot from "@/imports/05CreativeProfessionalExperience/yotamrozin-snapshot.png";
@@ -41,6 +42,10 @@ import cvPdf from "@/imports/Yotam_Rozin_CV_2026.pdf?url";
 const BLUE = "#0034E0";
 const HOMESCAPE_URL = "https://yotamrozin.wixsite.com/yotam-rozin/homescape";
 const PORTFOLIO_URL = "https://www.yotamrozin.com/";
+const HOMESCAPE_VIDEO =
+  "https://video.wixstatic.com/video/f7efcb_7a31416939fb4b82aa5c7b6164eb3e36/1080p/mp4/file.mp4";
+// Toggle to fall back to the still poster + logo overlay (kept for later use).
+const HOMESCAPE_USE_VIDEO = true;
 const BRAND = "'General Sans', system-ui, sans-serif";
 const SERIF = "'EB Garamond', Georgia, serif";
 const BODY = "'Inter', system-ui, sans-serif";
@@ -316,7 +321,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
   return (
     <section
       id="hero"
-      className="relative min-h-screen w-full overflow-hidden bg-white"
+      className="relative min-h-screen w-full overflow-x-clip bg-white"
       style={{ minHeight: "100svh" }}
     >
       {/* Scattered photos */}
@@ -326,7 +331,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
         scrollY={scrollY}
         factor={0.1}
         className="absolute rounded-sm shadow-sm"
-        style={{ left: "5.3%", top: "42%", width: "17%", aspectRatio: "328/429" }}
+        style={{ left: "5.3%", top: "calc(42% + 6rem)", width: "17%", aspectRatio: "328/429" }}
       />
       <ParallaxImage
         src={heroPicture21}
@@ -334,7 +339,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
         scrollY={scrollY}
         factor={0.15}
         className="absolute rounded-sm shadow-sm"
-        style={{ left: "39%", top: "50%", width: "30%", aspectRatio: "589/298" }}
+        style={{ left: "39%", top: "calc(50% + 6rem)", width: "30%", aspectRatio: "589/298" }}
       />
       <ParallaxImage
         src={heroPhoto}
@@ -342,7 +347,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
         scrollY={scrollY}
         factor={0.08}
         className="absolute rounded-sm shadow-sm"
-        style={{ left: "72%", top: "40%", width: "18%", aspectRatio: "347/508" }}
+        style={{ left: "72%", top: "calc(40% + 6rem)", width: "18%", aspectRatio: "347/508" }}
       />
       <ParallaxImage
         src={heroImg7}
@@ -350,7 +355,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
         scrollY={scrollY}
         factor={0.18}
         className="absolute rounded-sm shadow-sm"
-        style={{ left: "28%", top: "63%", width: "14.5%", aspectRatio: "276/422" }}
+        style={{ left: "28%", top: "calc(63% + 6rem)", width: "14.5%", aspectRatio: "276/422" }}
       />
       <ParallaxImage
         src={heroImg8}
@@ -358,7 +363,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
         scrollY={scrollY}
         factor={0.13}
         className="absolute rounded-sm shadow-sm"
-        style={{ left: "50%", top: "78%", width: "22.5%", aspectRatio: "434/230" }}
+        style={{ left: "50%", top: "calc(78% + 6rem)", width: "22.5%", aspectRatio: "434/230" }}
       />
 
       {/* Central text */}
@@ -367,7 +372,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
           initial={{ opacity: 0, filter: "blur(14px)" }}
           animate={{ opacity: 1, filter: "blur(0px)" }}
           transition={{ duration: 1.0, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          style={{ fontFamily: BRAND, fontWeight: 700, fontSize: "clamp(2.5rem, 5vw, 4rem)", color: BLUE, lineHeight: 0.9, letterSpacing: "-0.01em" }}
+          style={{ fontFamily: BRAND, fontWeight: 700, fontSize: "clamp(2rem, 4vw, 3.2rem)", color: BLUE, lineHeight: 0.9, letterSpacing: "-0.01em" }}
         >
           THE WORLD AS A PARENT
         </motion.h1>
@@ -375,7 +380,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
           initial={{ opacity: 0, filter: "blur(14px)" }}
           animate={{ opacity: 1, filter: "blur(0px)" }}
           transition={{ duration: 1.0, delay: 0.85, ease: [0.22, 1, 0.36, 1] }}
-          style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: "clamp(1.5rem, 3vw, 2.5rem)", color: BLUE, lineHeight: 0.9, marginTop: "1.2rem" }}
+          style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: "clamp(1.2rem, 2.4vw, 2rem)", color: BLUE, lineHeight: 0.9, marginTop: "1.2rem" }}
         >
           by Yotam Rozin
         </motion.p>
@@ -391,8 +396,8 @@ function WritingSampleSection({ scrollY }: { scrollY: number }) {
   const excerpts = [
     {
       title: "Excerpt I — Bonds: The First Cosmology",
-      col1: `The most conspicuous and vigorous experience of our early life must be the yolk-sac- and placenta-mediated exchange of blood with the world. Before anything else, we are suspended in a fluidal communion in the medium of blood. The blood of the mother is no longer the blood of one — it becomes a third element, turning two into one, the first bond between two bodies interlocked in bipolar intimacy. The bond itself, the exchange and connection, fills experience with an intense closeness that traverses the boundaries between in and out. It is no wonder that most love symbols are coloured red — in the state of womb-immanent blood communion you are in love.\n\nKorczak writes, "the same blood runs through its and your veins, and not a single drop of your red blood knows whether it will remain yours or its, or will be spilled to perish as a toll collected by the mystery of conception and delivery." (trans. Olga Medvedeva-Nathoo) The most conspicuous and vigorous experience of our early life must be`,
-      col2: ` the yolk-sac- and placenta-mediated exchange of blood with the world. Before anything else, we are suspended in a fluidal communion in the medium of blood. The blood of the mother is no longer the blood of one — it becomes a third element, turning two into one, the first bond between two bodies interlocked in bipolar intimacy. The bond itself, the exchange and connection, fills experience with an intense closeness that traverses the boundaries between in and out. It is no wonder that most love symbols are coloured red — in the state of womb-immanent blood communion you are in love.\n\nThe exchange of placental-umbilical blood, filled with substantial nourishment as well as toxins, is a powerful, constant, pulsating, and colossal state of closeness. The pulsation is a rhythmic bond between two hearts, a blood communion bringing hearts and nourishment into attunement. We feel a communion suspended in a flow, surging in pulsations, which satiates, nourishes, enlivens, and catalyses constant change with a powerful sense of growth.`,
+      col1: `As Korczak writes, "the same blood runs through its and your veins, and not a single drop of your red blood knows whether it will remain yours or its, or will be spilled to perish as a toll collected by the mystery of conception and delivery." (trans. Olga Medvedeva-Nathoo)\n\nThe most conspicuous and vigorous experience of our early life must be the yolk-sac- and placenta-mediated exchange of blood with the world. Before anything else, we are suspended in a fluidal communion in the medium of blood. The blood of the mother is no longer the blood of one — it becomes a third element, turning two into one, the first bond between two bodies interlocked in bipolar intimacy. The bond itself, the exchange and connection, fills experience with an intense closeness that traverses the boundaries between in and out. It is no wonder that most love symbols are coloured red — in the state of womb-immanent blood communion you are in love.`,
+      col2: `The exchange of placental-umbilical blood, filled with substantial nourishment as well as toxins, is a powerful, constant, pulsating, and colossal state of closeness. The pulsation is a rhythmic bond between two hearts, a blood communion bringing hearts and nourishment into attunement. We feel a communion suspended in a flow, surging in pulsations, which satiates, nourishes, enlivens, and catalyses constant change with a powerful sense of growth.`,
     },
     {
       title: "Excerpt II — Korczak and the Canary",
@@ -408,17 +413,18 @@ function WritingSampleSection({ scrollY }: { scrollY: number }) {
 
   return (
     <section id="writing-sample" className="bg-white pt-0">
-      {/* Parallax image bar — each photo is sized to its true aspect ratio so it
-          drifts as a rigid whole (no content scrolling within the frame); the
-          differing `factor` values make them move at different speeds. */}
-      <div className="relative h-72 md:h-96 overflow-hidden w-full">
+      {/* Parallax image band — each photo is sized to its true aspect ratio and
+          the container is NOT clipped, so every image shows in full and drifts
+          as a rigid whole (no content scrolling within the frame). The differing
+          `factor` values make them move at different speeds. */}
+      <div className="relative h-80 md:h-[30rem] w-full">
         <ParallaxImage
           src={wsImage10}
           alt="Writing sample image"
           scrollY={scrollY}
           factor={0.14}
           className="absolute"
-          style={{ left: "7%", top: "2%", width: "15%", aspectRatio: "898/1260" }}
+          style={{ left: "7%", top: "34%", width: "15%", aspectRatio: "898/1260" }}
         />
         <ParallaxImage
           src={wsImage9}
@@ -426,7 +432,7 @@ function WritingSampleSection({ scrollY }: { scrollY: number }) {
           scrollY={scrollY}
           factor={0.05}
           className="absolute"
-          style={{ left: "40%", top: "16%", width: "20%", aspectRatio: "718/409" }}
+          style={{ left: "40%", top: "50%", width: "20%", aspectRatio: "718/409" }}
         />
         <ParallaxImage
           src={wsPhoto}
@@ -434,7 +440,7 @@ function WritingSampleSection({ scrollY }: { scrollY: number }) {
           scrollY={scrollY}
           factor={0.18}
           className="absolute"
-          style={{ left: "74%", top: "10%", width: "15%", aspectRatio: "359/269" }}
+          style={{ left: "74%", top: "44%", width: "15%", aspectRatio: "359/269" }}
         />
       </div>
 
@@ -526,15 +532,19 @@ function LetterOfEndorsementSection() {
 function HomescapeSection({ scrollY }: { scrollY: number }) {
   // Media shown in the gallery / lightbox. The large image comes first so
   // its index (0) is stable; videos play only inside the lightbox.
+  // Photos first (index 0 = featured large image), then videos. The lightbox
+  // receives the whole array so arrow-navigation flows across everything.
   const galleryMedia: MediaItem[] = [
     { src: hsGalleryLarge, alt: "Homescape gallery large image" },
     { src: hsGallery1, alt: "Homescape gallery image 1" },
     { src: hsGallery2, alt: "Homescape gallery image 2" },
     { src: hsGallery3, alt: "Homescape gallery image 3" },
     { src: hsGallery4, alt: "Homescape gallery image 4" },
+    { src: hsGallery451, alt: "Homescape gallery image 5" },
     { src: hsVideoThumb1, alt: "Homescape — Al Jazeera feature", youtubeId: "NjqbatBl7vs" },
     { src: hsVideoThumb2, alt: "Homescape — video", youtubeId: "tEccUh0s3mI" },
   ];
+  const VIDEO_START = 6; // index of the first video in galleryMedia
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(0);
 
@@ -559,25 +569,40 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
 
   return (
     <section id="homescape" className="bg-black text-white relative overflow-hidden">
-      {/* Fixed poster background (no parallax) */}
+      {/* Fixed hero (no parallax) — muted background video, with the still poster
+          + logo overlay kept in code (hidden) as a fallback option. */}
       <div ref={posterRef} className="relative h-[70vh] min-h-[500px] overflow-hidden">
-        <img
-          src={homescapeBg}
-          alt="Homescape background"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
-        {/* Logo overlay — fades out on scroll, links to Homescape URL */}
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <a
-            href={HOMESCAPE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block"
-            style={{ width: "min(620px, 80vw)", opacity: logoOpacity }}
-          >
-            <img src={homescapeLogo} alt="Homescape logo" className="w-full h-auto" />
-          </a>
-        </div>
+        {HOMESCAPE_USE_VIDEO ? (
+          <video
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            src={HOMESCAPE_VIDEO}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+          />
+        ) : (
+          <>
+            <img
+              src={homescapeBg}
+              alt="Homescape background"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            {/* Logo overlay — fades out on scroll, links to Homescape URL */}
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <a
+                href={HOMESCAPE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+                style={{ width: "min(620px, 80vw)", opacity: logoOpacity }}
+              >
+                <img src={homescapeLogo} alt="Homescape logo" className="w-full h-auto" />
+              </a>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Main content */}
@@ -635,14 +660,13 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
           </div>
         </div>
 
-        {/* Image gallery */}
+        {/* Photo gallery — featured large image + tiles */}
         <FadeUp className="mt-16">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {/* Large left image (index 0) */}
+            {/* Featured large image (index 0) */}
             <div
-              className="row-span-2 overflow-hidden rounded-sm cursor-pointer"
+              className="col-span-2 row-span-2 overflow-hidden rounded-sm cursor-pointer"
               onClick={() => openLightbox(0)}
-              style={{ aspectRatio: "894/549" }}
             >
               <img
                 src={hsGalleryLarge}
@@ -650,13 +674,13 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
                 className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
-            {/* Remaining tiles (images + videos) */}
-            {galleryMedia.slice(1).map((item, i) => {
+            {/* Remaining photo tiles (indices 1..VIDEO_START-1) */}
+            {galleryMedia.slice(1, VIDEO_START).map((item, i) => {
               const idx = i + 1;
               return (
                 <div
                   key={idx}
-                  className="relative overflow-hidden rounded-sm cursor-pointer group/tile"
+                  className="overflow-hidden rounded-sm cursor-pointer group/tile"
                   style={{ aspectRatio: "424/255" }}
                   onClick={() => openLightbox(idx)}
                 >
@@ -665,13 +689,34 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
                     alt={item.alt}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover/tile:scale-105"
                   />
-                  {item.youtubeId && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/25 transition-colors group-hover/tile:bg-black/40">
-                      <span className="flex items-center justify-center w-14 h-14 rounded-full bg-black/60 backdrop-blur-sm">
-                        <Play size={24} className="text-white translate-x-[2px]" fill="white" />
-                      </span>
-                    </div>
-                  )}
+                </div>
+              );
+            })}
+          </div>
+        </FadeUp>
+
+        {/* Video gallery — two videos, two columns (play in lightbox) */}
+        <FadeUp className="mt-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {galleryMedia.slice(VIDEO_START).map((item, i) => {
+              const idx = i + VIDEO_START;
+              return (
+                <div
+                  key={idx}
+                  className="relative overflow-hidden rounded-sm cursor-pointer group/tile"
+                  style={{ aspectRatio: "16/9" }}
+                  onClick={() => openLightbox(idx)}
+                >
+                  <img
+                    src={item.src}
+                    alt={item.alt}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/tile:scale-105"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/25 transition-colors group-hover/tile:bg-black/40">
+                    <span className="flex items-center justify-center w-16 h-16 rounded-full bg-black/60 backdrop-blur-sm">
+                      <Play size={26} className="text-white translate-x-[2px]" fill="white" />
+                    </span>
+                  </div>
                 </div>
               );
             })}
