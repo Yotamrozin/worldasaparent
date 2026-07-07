@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Lenis from "lenis";
 import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "motion/react";
-import { X, ArrowUp } from "lucide-react";
+import { X, ArrowUp, Play } from "lucide-react";
 
 // Hero images
 import heroImg8 from "@/imports/01Hero/c9d9ead4369bdec13806dd655ba00bba73b6deb6.png";
@@ -31,12 +31,16 @@ import hsGallery2 from "@/imports/04Homescape-1/30271de092364d67376dc6598e2c6935
 import hsGallery3 from "@/imports/04Homescape-1/4ce7dac195c92073da19f7145fb2917f5a18d0fe.png";
 import hsGallery4 from "@/imports/04Homescape-1/a559f69a08fe7846f0d04fdb615bc6514c4022a5.png";
 import hsGalleryLarge from "@/imports/04Homescape-1/42968b4612124e72b9c4e415eb51c6b5d546b166.png";
+import hsVideoThumb1 from "@/imports/04Homescape-1/yt-NjqbatBl7vs.jpg";
+import hsVideoThumb2 from "@/imports/04Homescape-1/yt-tEccUh0s3mI.jpg";
 
 // Creative Experience
-import creativeImg from "@/imports/05CreativeProfessionalExperience/457d3a026c6f4f926c53c172c1126df6517cb873.png";
+import yotamSnapshot from "@/imports/05CreativeProfessionalExperience/yotamrozin-snapshot.png";
+import cvPdf from "@/imports/Yotam_Rozin_CV_2026.pdf?url";
 
 const BLUE = "#0034E0";
 const HOMESCAPE_URL = "https://yotamrozin.wixsite.com/yotam-rozin/homescape";
+const PORTFOLIO_URL = "https://www.yotamrozin.com/";
 const BRAND = "'General Sans', system-ui, sans-serif";
 const SERIF = "'EB Garamond', Georgia, serif";
 const BODY = "'Inter', system-ui, sans-serif";
@@ -81,10 +85,10 @@ function PrimaryButton({
   onClick?: () => void;
 }) {
   const base =
-    "group inline-flex items-center justify-center px-16 py-6 rounded-[34px] cursor-pointer select-none transition-all duration-300 " +
-    "bg-[#0034E0] text-white border-[6px] border-transparent " +
-    "hover:bg-transparent hover:border-[#0034E0] hover:text-[#0034E0]";
-  const textStyle: React.CSSProperties = { fontFamily: BRAND, fontWeight: 600, fontSize: "1.25rem", lineHeight: 1.2, whiteSpace: "nowrap" };
+    "group inline-flex items-center justify-center px-6 py-2.5 rounded-full cursor-pointer select-none " +
+    "border-2 border-[#0034E0] bg-[#0034E0] text-white " +
+    "hover:bg-transparent hover:text-[#0034E0]";
+  const textStyle: React.CSSProperties = { fontFamily: BRAND, fontWeight: 600, fontSize: "1rem", lineHeight: 1.2, whiteSpace: "nowrap" };
 
   if (href) {
     return (
@@ -112,12 +116,11 @@ function SecondaryButton({
   light?: boolean;
 }) {
   const base =
-    "group inline-flex items-center justify-center px-16 py-6 rounded-[34px] cursor-pointer select-none transition-all duration-300 " +
-    "bg-transparent border-[6px] " +
+    "group inline-flex items-center justify-center px-6 py-2.5 rounded-full cursor-pointer select-none border-2 bg-transparent " +
     (light
-      ? "border-white text-white hover:bg-white hover:border-transparent hover:text-[#0034E0]"
-      : "border-[#0034E0] text-[#0034E0] hover:bg-[#0034E0] hover:border-transparent hover:text-white");
-  const textStyle: React.CSSProperties = { fontFamily: BRAND, fontWeight: 600, fontSize: "1.25rem", lineHeight: 1.2, whiteSpace: "nowrap" };
+      ? "border-white text-white hover:bg-white hover:text-[#0034E0]"
+      : "border-[#0034E0] text-[#0034E0] hover:bg-[#0034E0] hover:text-white");
+  const textStyle: React.CSSProperties = { fontFamily: BRAND, fontWeight: 600, fontSize: "1rem", lineHeight: 1.2, whiteSpace: "nowrap" };
 
   if (href) {
     return (
@@ -151,38 +154,36 @@ function ParallaxImage({
   imgClassName?: string;
   style?: React.CSSProperties;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [offset, setOffset] = useState(0);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const elTop = rect.top + scrollY;
-    const relativeScroll = scrollY - elTop + window.innerHeight / 2;
-    setOffset(relativeScroll * factor);
-  }, [scrollY, factor]);
+  // Parallax moves the whole element at a speed relative to page scroll.
+  // Different `factor` values make some images drift faster than others.
+  // There is intentionally no transform on the inner <img>, so the image
+  // content stays fixed within its frame (no "parallax within the image").
+  const offset = -scrollY * factor;
 
   return (
-    <div ref={ref} className={`overflow-hidden ${className}`} style={style}>
+    <div
+      className={className}
+      style={{ ...style, transform: `translate3d(0, ${offset}px, 0)`, willChange: "transform" }}
+    >
       <img
         src={src}
         alt={alt}
-        className={`w-full h-full object-cover pointer-events-none will-change-transform ${imgClassName}`}
-        style={{ transform: `translateY(${offset}px)`, scale: "1.15" }}
+        className={`w-full h-full object-cover pointer-events-none ${imgClassName}`}
       />
     </div>
   );
 }
 
 // ---------- lightbox ----------
+type MediaItem = { src: string; alt: string; youtubeId?: string };
+
 function Lightbox({
   images,
   startIndex,
   open,
   onClose,
 }: {
-  images: { src: string; alt: string }[];
+  images: MediaItem[];
   startIndex: number;
   open: boolean;
   onClose: () => void;
@@ -203,6 +204,8 @@ function Lightbox({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [open, images.length, onClose]);
+
+  const current = images[idx];
 
   return (
     <Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
@@ -234,15 +237,33 @@ function Lightbox({
               </button>
             </>
           )}
-          <motion.img
-            key={idx}
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            src={images[idx]?.src}
-            alt={images[idx]?.alt ?? ""}
-            className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl"
-          />
+          {current?.youtubeId ? (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="w-[90vw] max-w-[1100px] aspect-video rounded-lg overflow-hidden shadow-2xl bg-black"
+            >
+              <iframe
+                className="w-full h-full"
+                src={`https://www.youtube.com/embed/${current.youtubeId}?autoplay=1&rel=0`}
+                title={current.alt}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </motion.div>
+          ) : (
+            <motion.img
+              key={idx}
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              src={current?.src}
+              alt={current?.alt ?? ""}
+              className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl"
+            />
+          )}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
@@ -501,12 +522,16 @@ function LetterOfEndorsementSection() {
 // HOMESCAPE SECTION
 // ============================================================
 function HomescapeSection({ scrollY }: { scrollY: number }) {
-  const galleryImages = [
+  // Media shown in the gallery / lightbox. The large image comes first so
+  // its index (0) is stable; videos play only inside the lightbox.
+  const galleryMedia: MediaItem[] = [
+    { src: hsGalleryLarge, alt: "Homescape gallery large image" },
     { src: hsGallery1, alt: "Homescape gallery image 1" },
     { src: hsGallery2, alt: "Homescape gallery image 2" },
     { src: hsGallery3, alt: "Homescape gallery image 3" },
     { src: hsGallery4, alt: "Homescape gallery image 4" },
-    { src: hsGalleryLarge, alt: "Homescape gallery large image" },
+    { src: hsVideoThumb1, alt: "Homescape — Al Jazeera feature", youtubeId: "NjqbatBl7vs" },
+    { src: hsVideoThumb2, alt: "Homescape — video", youtubeId: "tEccUh0s3mI" },
   ];
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(0);
@@ -516,29 +541,37 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
     setLightboxOpen(true);
   }, []);
 
+  // Poster stays fixed (no parallax); the logo fades out as the section scrolls up.
+  const posterRef = useRef<HTMLDivElement>(null);
+  const [logoOpacity, setLogoOpacity] = useState(1);
+
+  useEffect(() => {
+    const el = posterRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    // Fully visible when the poster top is at the viewport top; faded once
+    // roughly half the poster has scrolled past.
+    const progress = Math.min(Math.max(-rect.top / (rect.height * 0.5), 0), 1);
+    setLogoOpacity(1 - progress);
+  }, [scrollY]);
+
   return (
     <section id="homescape" className="bg-black text-white relative overflow-hidden">
-      {/* Parallax hero background */}
-      <div className="relative h-[70vh] min-h-[500px] overflow-hidden">
-        <div
-          className="absolute inset-0"
-          style={{ transform: `translateY(${scrollY * 0.12}px)`, willChange: "transform" }}
-        >
-          <img
-            src={homescapeBg}
-            alt="Homescape background"
-            className="w-full h-[130%] object-cover object-center"
-            style={{ marginTop: "-15%" }}
-          />
-        </div>
-        {/* Logo overlay — links to Homescape URL */}
+      {/* Fixed poster background (no parallax) */}
+      <div ref={posterRef} className="relative h-[70vh] min-h-[500px] overflow-hidden">
+        <img
+          src={homescapeBg}
+          alt="Homescape background"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+        {/* Logo overlay — fades out on scroll, links to Homescape URL */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <a
             href={HOMESCAPE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="block transition-opacity hover:opacity-80"
-            style={{ width: "min(620px, 80vw)" }}
+            className="block"
+            style={{ width: "min(620px, 80vw)", opacity: logoOpacity }}
           >
             <img src={homescapeLogo} alt="Homescape logo" className="w-full h-auto" />
           </a>
@@ -596,10 +629,10 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
         {/* Image gallery */}
         <FadeUp className="mt-16">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {/* Large left image */}
+            {/* Large left image (index 0) */}
             <div
               className="row-span-2 overflow-hidden rounded-sm cursor-pointer"
-              onClick={() => openLightbox(4)}
+              onClick={() => openLightbox(0)}
               style={{ aspectRatio: "894/549" }}
             >
               <img
@@ -608,21 +641,31 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
                 className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
-            {/* 2x2 grid */}
-            {[hsGallery1, hsGallery2, hsGallery3, hsGallery4].map((src, i) => (
-              <div
-                key={i}
-                className="overflow-hidden rounded-sm cursor-pointer"
-                style={{ aspectRatio: "424/255" }}
-                onClick={() => openLightbox(i)}
-              >
-                <img
-                  src={src}
-                  alt={`Homescape image ${i + 1}`}
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                />
-              </div>
-            ))}
+            {/* Remaining tiles (images + videos) */}
+            {galleryMedia.slice(1).map((item, i) => {
+              const idx = i + 1;
+              return (
+                <div
+                  key={idx}
+                  className="relative overflow-hidden rounded-sm cursor-pointer group/tile"
+                  style={{ aspectRatio: "424/255" }}
+                  onClick={() => openLightbox(idx)}
+                >
+                  <img
+                    src={item.src}
+                    alt={item.alt}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/tile:scale-105"
+                  />
+                  {item.youtubeId && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/25 transition-colors group-hover/tile:bg-black/40">
+                      <span className="flex items-center justify-center w-14 h-14 rounded-full bg-black/60 backdrop-blur-sm">
+                        <Play size={24} className="text-white translate-x-[2px]" fill="white" />
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </FadeUp>
 
@@ -657,7 +700,7 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
       </div>
 
       <Lightbox
-        images={galleryImages}
+        images={galleryMedia}
         startIndex={lightboxIdx}
         open={lightboxOpen}
         onClose={() => setLightboxOpen(false)}
@@ -687,13 +730,21 @@ function CreativeExperienceSection() {
         </FadeUp>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-          {/* Left: image */}
-          <FadeUp delay={0.1} className="overflow-hidden rounded-[40px]">
-            <img
-              src={creativeImg}
-              alt="Creative professional work"
-              className="w-full h-auto object-cover rounded-[40px]"
-            />
+          {/* Left: portfolio snapshot — links out, gentle zoom on hover */}
+          <FadeUp delay={0.1}>
+            <a
+              href={PORTFOLIO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block overflow-hidden rounded-[40px] shadow-sm"
+              aria-label="Visit yotamrozin.com"
+            >
+              <img
+                src={yotamSnapshot}
+                alt="Snapshot of yotamrozin.com"
+                className="w-full h-auto object-cover rounded-[40px] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              />
+            </a>
           </FadeUp>
 
           {/* Right: text + buttons */}
@@ -702,10 +753,10 @@ function CreativeExperienceSection() {
               Alongside my artistic practice, I work as an independent multidisciplinary designer and creative lead. I manage projects from initial strategy through to final delivery, overseeing timelines, budgets, and project scope while designing brands, websites, motion graphics, and digital experiences. My work combines creative direction, systems thinking, and hands-on design to deliver cohesive and impactful outcomes for clients.
             </p>
             <div className="flex flex-wrap gap-4">
-              <PrimaryButton href="https://yotamrozin.wixsite.com/yotam-rozin">
+              <PrimaryButton href={PORTFOLIO_URL}>
                 Visit My Website
               </PrimaryButton>
-              <SecondaryButton href="#">
+              <SecondaryButton href={cvPdf}>
                 Download CV
               </SecondaryButton>
             </div>
@@ -736,9 +787,9 @@ function CreativeExperienceSection() {
             <button
               onClick={scrollToTop}
               aria-label="Back to top"
-              className="group inline-flex items-center justify-center w-16 h-16 rounded-full border-[3px] transition-all duration-300 border-[#0034E0] text-[#0034E0] hover:bg-[#0034E0] hover:border-transparent hover:text-white"
+              className="group inline-flex items-center justify-center w-14 h-14 rounded-full border-2 border-[#0034E0] text-[#0034E0] hover:bg-[#0034E0] hover:text-white"
             >
-              <ArrowUp size={22} className="transition-colors duration-300" />
+              <ArrowUp size={22} />
             </button>
           </div>
         </FadeUp>
