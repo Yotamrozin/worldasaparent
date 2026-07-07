@@ -21,7 +21,7 @@ import letterImg from "@/imports/03LetterOfEndorsement/425056c595d4249bcc2d26dab
 import letterPdf from "@/imports/Joey_Connolly_-_Letter_of_Endorsement.pdf?url";
 
 // Homescape images
-import homescapeBg from "@/imports/04Homescape-1/9662599fadb157c152c0531213cb3b9e7f1279de.png";
+import homescapeBg from "@/imports/04Homescape-1/homescape-poster.jpg";
 import homescapeLogo from "@/imports/04Homescape-1/8fe3d075165fceba9994ba4d006d898949e0cb8c.png";
 import hsFeatured1 from "@/imports/04Homescape-1/1a317e0205330e43c338275a95c89c9b5b426043.png";
 import hsFeatured2 from "@/imports/04Homescape-1/9eb83c2137abc4b8dfaa47b9e37c46c86e4bbe7f.png";
@@ -118,7 +118,7 @@ function SecondaryButton({
   const base =
     "group inline-flex items-center justify-center px-6 py-2.5 rounded-full cursor-pointer select-none border-2 bg-transparent " +
     (light
-      ? "border-white text-white hover:bg-white hover:text-[#0034E0]"
+      ? "border-white text-white hover:bg-white hover:text-black"
       : "border-[#0034E0] text-[#0034E0] hover:bg-[#0034E0] hover:text-white");
   const textStyle: React.CSSProperties = { fontFamily: BRAND, fontWeight: 600, fontSize: "1rem", lineHeight: 1.2, whiteSpace: "nowrap" };
 
@@ -408,31 +408,33 @@ function WritingSampleSection({ scrollY }: { scrollY: number }) {
 
   return (
     <section id="writing-sample" className="bg-white pt-0">
-      {/* Parallax image bar */}
-      <div className="relative h-64 md:h-80 overflow-hidden w-full">
+      {/* Parallax image bar — each photo is sized to its true aspect ratio so it
+          drifts as a rigid whole (no content scrolling within the frame); the
+          differing `factor` values make them move at different speeds. */}
+      <div className="relative h-72 md:h-96 overflow-hidden w-full">
         <ParallaxImage
           src={wsImage10}
           alt="Writing sample image"
           scrollY={scrollY}
           factor={0.14}
           className="absolute"
-          style={{ left: "7%", top: 0, width: "18%", height: "160%" }}
+          style={{ left: "7%", top: "2%", width: "15%", aspectRatio: "898/1260" }}
         />
         <ParallaxImage
           src={wsImage9}
           alt="Writing sample image"
           scrollY={scrollY}
-          factor={0.1}
+          factor={0.05}
           className="absolute"
-          style={{ left: "41%", top: 0, width: "19%", height: "160%" }}
+          style={{ left: "40%", top: "16%", width: "20%", aspectRatio: "718/409" }}
         />
         <ParallaxImage
           src={wsPhoto}
           alt="Writing sample image"
           scrollY={scrollY}
-          factor={0.16}
+          factor={0.18}
           className="absolute"
-          style={{ left: "73%", top: 0, width: "16%", height: "160%" }}
+          style={{ left: "74%", top: "10%", width: "15%", aspectRatio: "359/269" }}
         />
       </div>
 
@@ -580,6 +582,13 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
 
       {/* Main content */}
       <div className="max-w-[1200px] mx-auto px-8 md:px-16 py-20">
+        <FadeUp>
+          <h2
+            style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(2rem, 4vw, 3.5rem)", color: "white", lineHeight: 1.2, marginBottom: "3rem" }}
+          >
+            Notable Artistic Practice
+          </h2>
+        </FadeUp>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
           {/* Text column */}
           <div className="lg:col-span-3">
@@ -590,11 +599,11 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
                 rel="noopener noreferrer"
                 className="inline-block hover:opacity-75 transition-opacity"
               >
-                <h2
-                  style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(1.8rem, 3.5vw, 3rem)", color: "white", lineHeight: 1.5, marginBottom: "1.5rem" }}
+                <h3
+                  style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(1.3rem, 2.2vw, 1.9rem)", color: "white", lineHeight: 1.4, marginBottom: "1.25rem" }}
                 >
                   Homescape (2018)
-                </h2>
+                </h3>
               </a>
               <p style={{ fontFamily: BODY, fontSize: "clamp(0.9rem, 1.2vw, 1.1rem)", color: "white", lineHeight: 1.6, marginBottom: "1.25rem" }}>
                 Through a guided meditation, participants are drawn into the dark liminal landscape of the fields surrounding Ma'as, the artist's hometown. They then freely explore regions close to home as well as their own personal uncharted territories.
@@ -606,7 +615,7 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
                 Presenting the piece throughout 2016–2018 presented an opportunity to engage personally with diverse communities around the world and people of all ages.
               </p>
               <SecondaryButton href={HOMESCAPE_URL} light>
-                more info
+                More Info
               </SecondaryButton>
             </FadeUp>
           </div>
@@ -617,7 +626,7 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
               <p style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "1.1rem", color: "white", marginBottom: "1.5rem" }}>
                 Featured in
               </p>
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col items-center gap-6">
                 <img src={hsFeatured1} alt="A MAZE festival" className="w-full max-w-[200px] object-contain opacity-90" />
                 <img src={hsFeatured2} alt="IDFA DocLab" className="w-full max-w-[200px] object-contain opacity-90" />
                 <img src={hsFeatured3} alt="Festival feature" className="w-full max-w-[120px] object-contain opacity-90" />
