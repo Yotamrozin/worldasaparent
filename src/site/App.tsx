@@ -1,43 +1,46 @@
+"use client";
+
 import { useEffect, useRef, useState, useCallback } from "react";
 import Lenis from "lenis";
 import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "motion/react";
 import { X, ArrowUp, Play } from "lucide-react";
 
+// Static assets live in /public/imports and are referenced by URL path.
 // Hero images
-import heroImg8 from "@/imports/01Hero/c9d9ead4369bdec13806dd655ba00bba73b6deb6.png";
-import heroPicture21 from "@/imports/01Hero/b4eebfce99f050ddf2605bf673f8616ed04b7ca6.png";
-import heroPhoto from "@/imports/01Hero/122608485635e846f39d10ad2694f59023f909dd.png";
-import heroImg7 from "@/imports/01Hero/833d158ae763c459812b242f17917a96b903e1d7.png";
-import heroPicture32 from "@/imports/01Hero/e8c226f0ce4ebb0e326ec38a4dee81fc142a5589.png";
+const heroImg8 = "/imports/01Hero/c9d9ead4369bdec13806dd655ba00bba73b6deb6.png";
+const heroPicture21 = "/imports/01Hero/b4eebfce99f050ddf2605bf673f8616ed04b7ca6.png";
+const heroPhoto = "/imports/01Hero/122608485635e846f39d10ad2694f59023f909dd.png";
+const heroImg7 = "/imports/01Hero/833d158ae763c459812b242f17917a96b903e1d7.png";
+const heroPicture32 = "/imports/01Hero/e8c226f0ce4ebb0e326ec38a4dee81fc142a5589.png";
 
 // Writing Sample images
-import wsImage10 from "@/imports/02WritingSample/7500cd3cadaacce24f3eb950d585efc0e01c6e5d.png";
-import wsPhoto from "@/imports/02WritingSample/87ebe7e7d714c3c7b3bdeb076940292155a70ca7.png";
-import wsImage9 from "@/imports/02WritingSample/eb6add21a75ba300f515952b4877c3540c34ec6e.png";
+const wsImage10 = "/imports/02WritingSample/7500cd3cadaacce24f3eb950d585efc0e01c6e5d.png";
+const wsPhoto = "/imports/02WritingSample/87ebe7e7d714c3c7b3bdeb076940292155a70ca7.png";
+const wsImage9 = "/imports/02WritingSample/eb6add21a75ba300f515952b4877c3540c34ec6e.png";
 
 // Letter of Endorsement
-import letterImg from "@/imports/03LetterOfEndorsement/425056c595d4249bcc2d26dab5c417aee0627980.png";
-import letterPdf from "@/imports/Joey_Connolly_-_Letter_of_Endorsement.pdf?url";
+const letterImg = "/imports/03LetterOfEndorsement/425056c595d4249bcc2d26dab5c417aee0627980.png";
+const letterPdf = "/imports/Joey_Connolly_-_Letter_of_Endorsement.pdf";
 
 // Homescape images
-import homescapeBg from "@/imports/04Homescape-1/homescape-poster.jpg";
-import homescapeLogo from "@/imports/04Homescape-1/8fe3d075165fceba9994ba4d006d898949e0cb8c.png";
-import hsFeatured1 from "@/imports/04Homescape-1/1a317e0205330e43c338275a95c89c9b5b426043.png";
-import hsFeatured2 from "@/imports/04Homescape-1/9eb83c2137abc4b8dfaa47b9e37c46c86e4bbe7f.png";
-import hsFeatured3 from "@/imports/04Homescape-1/25044e89d050aa4f69cd442c97970bc283ab6789.png";
-import hsGallery1 from "@/imports/04Homescape-1/0b4a3b54c7a178636f2a8222c254ec1ef2895514.png";
-import hsGallery2 from "@/imports/04Homescape-1/30271de092364d67376dc6598e2c6935b33c4288.png";
-import hsGallery3 from "@/imports/04Homescape-1/4ce7dac195c92073da19f7145fb2917f5a18d0fe.png";
-import hsGallery4 from "@/imports/04Homescape-1/a559f69a08fe7846f0d04fdb615bc6514c4022a5.png";
-import hsGalleryLarge from "@/imports/04Homescape-1/42968b4612124e72b9c4e415eb51c6b5d546b166.png";
-import hsVideoThumb1 from "@/imports/04Homescape-1/yt-NjqbatBl7vs.jpg";
-import hsVideoThumb2 from "@/imports/04Homescape-1/yt-tEccUh0s3mI.jpg";
-import hsGallery451 from "@/imports/04Homescape-1/gallery-451.jpg";
+const homescapeBg = "/imports/04Homescape-1/homescape-poster.jpg";
+const homescapeLogo = "/imports/04Homescape-1/8fe3d075165fceba9994ba4d006d898949e0cb8c.png";
+const hsFeatured1 = "/imports/04Homescape-1/1a317e0205330e43c338275a95c89c9b5b426043.png";
+const hsFeatured2 = "/imports/04Homescape-1/9eb83c2137abc4b8dfaa47b9e37c46c86e4bbe7f.png";
+const hsFeatured3 = "/imports/04Homescape-1/25044e89d050aa4f69cd442c97970bc283ab6789.png";
+const hsGallery1 = "/imports/04Homescape-1/0b4a3b54c7a178636f2a8222c254ec1ef2895514.png";
+const hsGallery2 = "/imports/04Homescape-1/30271de092364d67376dc6598e2c6935b33c4288.png";
+const hsGallery3 = "/imports/04Homescape-1/4ce7dac195c92073da19f7145fb2917f5a18d0fe.png";
+const hsGallery4 = "/imports/04Homescape-1/a559f69a08fe7846f0d04fdb615bc6514c4022a5.png";
+const hsGalleryLarge = "/imports/04Homescape-1/42968b4612124e72b9c4e415eb51c6b5d546b166.png";
+const hsVideoThumb1 = "/imports/04Homescape-1/yt-NjqbatBl7vs.jpg";
+const hsVideoThumb2 = "/imports/04Homescape-1/yt-tEccUh0s3mI.jpg";
+const hsGallery451 = "/imports/04Homescape-1/gallery-451.jpg";
 
 // Creative Experience
-import yotamSnapshot from "@/imports/05CreativeProfessionalExperience/yotamrozin-snapshot.png";
-import cvPdf from "@/imports/Yotam_Rozin_CV_2026.pdf?url";
+const yotamSnapshot = "/imports/05CreativeProfessionalExperience/yotamrozin-snapshot.png";
+const cvPdf = "/imports/Yotam_Rozin_CV_2026.pdf";
 
 const BLUE = "#0034E0";
 const HOMESCAPE_URL = "https://yotamrozin.wixsite.com/yotam-rozin/homescape";
