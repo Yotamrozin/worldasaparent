@@ -153,6 +153,8 @@ function ParallaxImage({
   className = "",
   imgClassName = "",
   style,
+  reveal = false,
+  revealDelay = 0,
 }: {
   src: string;
   alt: string;
@@ -161,6 +163,8 @@ function ParallaxImage({
   className?: string;
   imgClassName?: string;
   style?: React.CSSProperties;
+  reveal?: boolean;
+  revealDelay?: number;
 }) {
   // Parallax moves the whole element at a speed relative to page scroll.
   // Different `factor` values make some images drift faster than others.
@@ -168,17 +172,29 @@ function ParallaxImage({
   // content stays fixed within its frame (no "parallax within the image").
   const offset = -scrollY * factor;
 
+  // `y` is passed as a plain (re-rendered) style value rather than a manual
+  // transform string so it composes with the framer-driven scale/opacity
+  // reveal below instead of fighting over the `transform` CSS property.
+  const revealProps = reveal
+    ? {
+        initial: { opacity: 0, scale: 0.94, filter: "blur(6px)" },
+        animate: { opacity: 1, scale: 1, filter: "blur(0px)" },
+        transition: { duration: 0.95, delay: revealDelay, ease: [0.22, 1, 0.36, 1] as const },
+      }
+    : {};
+
   return (
-    <div
+    <motion.div
       className={className}
-      style={{ ...style, transform: `translate3d(0, ${offset}px, 0)`, willChange: "transform" }}
+      style={{ ...style, y: offset, willChange: "transform" }}
+      {...revealProps}
     >
       <img
         src={src}
         alt={alt}
         className={`w-full h-full object-cover pointer-events-none ${imgClassName}`}
       />
-    </div>
+    </motion.div>
   );
 }
 
@@ -291,7 +307,7 @@ function Navbar() {
     <motion.nav
       initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, delay: 1.4, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className="fixed top-0 left-0 right-0 z-40 flex justify-center pt-10 pb-4 pointer-events-none"
     >
       <div
@@ -333,6 +349,8 @@ function HeroSection({ scrollY }: { scrollY: number }) {
         alt="Project photo"
         scrollY={scrollY}
         factor={0.1}
+        reveal
+        revealDelay={0.55}
         className="absolute rounded-sm shadow-sm"
         style={{ left: "5.3%", top: "calc(42% + 6rem)", width: "17%", aspectRatio: "328/429" }}
       />
@@ -341,6 +359,8 @@ function HeroSection({ scrollY }: { scrollY: number }) {
         alt="Project photo"
         scrollY={scrollY}
         factor={0.15}
+        reveal
+        revealDelay={0.67}
         className="absolute rounded-sm shadow-sm"
         style={{ left: "39%", top: "calc(50% + 6rem)", width: "30%", aspectRatio: "589/298" }}
       />
@@ -349,6 +369,8 @@ function HeroSection({ scrollY }: { scrollY: number }) {
         alt="Project photo"
         scrollY={scrollY}
         factor={0.08}
+        reveal
+        revealDelay={0.79}
         className="absolute rounded-sm shadow-sm"
         style={{ left: "72%", top: "calc(40% + 6rem)", width: "18%", aspectRatio: "347/508" }}
       />
@@ -357,6 +379,8 @@ function HeroSection({ scrollY }: { scrollY: number }) {
         alt="Project photo"
         scrollY={scrollY}
         factor={0.18}
+        reveal
+        revealDelay={0.91}
         className="absolute rounded-sm shadow-sm"
         style={{ left: "28%", top: "calc(63% + 6rem)", width: "14.5%", aspectRatio: "276/422" }}
       />
@@ -365,6 +389,8 @@ function HeroSection({ scrollY }: { scrollY: number }) {
         alt="Project photo"
         scrollY={scrollY}
         factor={0.13}
+        reveal
+        revealDelay={1.03}
         className="absolute rounded-sm shadow-sm"
         style={{ left: "50%", top: "calc(78% + 6rem)", width: "22.5%", aspectRatio: "434/230" }}
       />
@@ -372,17 +398,17 @@ function HeroSection({ scrollY }: { scrollY: number }) {
       {/* Central text */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-4">
         <motion.h1
-          initial={{ opacity: 0, filter: "blur(14px)" }}
-          animate={{ opacity: 1, filter: "blur(0px)" }}
-          transition={{ duration: 1.0, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, filter: "blur(6px)", scale: 0.96 }}
+          animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
+          transition={{ duration: 0.95, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           style={{ fontFamily: BRAND, fontWeight: 700, fontSize: "clamp(2rem, 4vw, 3.2rem)", color: BLUE, lineHeight: 0.9, letterSpacing: "-0.01em" }}
         >
           THE WORLD AS A PARENT
         </motion.h1>
         <motion.p
-          initial={{ opacity: 0, filter: "blur(14px)" }}
-          animate={{ opacity: 1, filter: "blur(0px)" }}
-          transition={{ duration: 1.0, delay: 0.85, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, filter: "blur(6px)", scale: 0.96 }}
+          animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
+          transition={{ duration: 0.95, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
           style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: "clamp(1.2rem, 2.4vw, 2rem)", color: BLUE, lineHeight: 0.9, marginTop: "1.2rem" }}
         >
           by Yotam Rozin
