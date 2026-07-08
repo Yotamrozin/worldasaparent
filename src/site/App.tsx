@@ -199,7 +199,7 @@ function ParallaxImage({
 }
 
 // ---------- lightbox ----------
-type MediaItem = { src: string; alt: string; youtubeId?: string };
+type MediaItem = { src: string; alt: string; videoEmbedSrc?: string };
 
 function Lightbox({
   images,
@@ -261,7 +261,7 @@ function Lightbox({
               </button>
             </>
           )}
-          {current?.youtubeId ? (
+          {current?.videoEmbedSrc ? (
             <motion.div
               key={idx}
               initial={{ opacity: 0, scale: 0.96 }}
@@ -271,7 +271,7 @@ function Lightbox({
             >
               <iframe
                 className="w-full h-full"
-                src={`https://www.youtube.com/embed/${current.youtubeId}?autoplay=1&rel=0`}
+                src={`${current.videoEmbedSrc}?autoplay=true`}
                 title={current.alt}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -570,8 +570,16 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
     { src: hsGallery3, alt: "Homescape gallery image 3" },
     { src: hsGallery4, alt: "Homescape gallery image 4" },
     { src: hsGallery451, alt: "Homescape gallery image 5" },
-    { src: hsVideoThumb1, alt: "Homescape — Al Jazeera feature", youtubeId: "NjqbatBl7vs" },
-    { src: hsVideoThumb2, alt: "Homescape — video", youtubeId: "tEccUh0s3mI" },
+    {
+      src: hsVideoThumb1,
+      alt: "Homescape — Al Jazeera feature",
+      videoEmbedSrc: "https://iframe.mediadelivery.net/embed/504938/11700986-9e58-4255-b155-70af30cbebb7",
+    },
+    {
+      src: hsVideoThumb2,
+      alt: "Homescape — video",
+      videoEmbedSrc: "https://iframe.mediadelivery.net/embed/504938/f6a09cec-73a1-424b-82ed-ebf85165bb27",
+    },
   ];
   const VIDEO_START = 6; // index of the first video in galleryMedia
   const [lightboxOpen, setLightboxOpen] = useState(false);
