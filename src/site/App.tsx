@@ -454,7 +454,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
           initial={{ opacity: 0, filter: "blur(6px)", scale: 0.96 }}
           animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
           transition={{ duration: 0.95, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          style={{ fontFamily: BRAND, fontWeight: 700, fontSize: "clamp(2rem, 4vw, 3.2rem)", color: BLUE, lineHeight: 0.9, letterSpacing: "-0.01em" }}
+          style={{ fontFamily: BRAND, fontWeight: 700, fontSize: isMobile ? "clamp(2.7rem, 5.4vw, 4.32rem)" : "clamp(2rem, 4vw, 3.2rem)", color: BLUE, lineHeight: 0.9, letterSpacing: "-0.01em" }}
         >
           THE WORLD AS A PARENT
         </motion.h1>
@@ -462,7 +462,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
           initial={{ opacity: 0, filter: "blur(6px)", scale: 0.96 }}
           animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
           transition={{ duration: 0.95, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: "clamp(1.2rem, 2.4vw, 2rem)", color: BLUE, lineHeight: 0.9, marginTop: "1.2rem" }}
+          style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: isMobile ? "clamp(1.62rem, 3.24vw, 2.7rem)" : "clamp(1.2rem, 2.4vw, 2rem)", color: BLUE, lineHeight: 0.9, marginTop: "1.2rem" }}
         >
           by Yotam Rozin
         </motion.p>
