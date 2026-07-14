@@ -350,10 +350,10 @@ function Navbar() {
           onClick={() => setMobileOpen((v) => !v)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
-          className="flex items-center justify-center w-11 h-11 rounded-full bg-white shadow-md cursor-pointer"
+          className="flex items-center justify-center w-11 h-11 cursor-pointer"
           style={{ color: BLUE }}
         >
-          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+          {mobileOpen ? <X size={25} /> : <Menu size={25} />}
         </button>
       </motion.div>
 
