@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Lenis from "lenis";
 import * as Dialog from "@radix-ui/react-dialog";
-import { motion } from "motion/react";
-import { X, ArrowUp, Play } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { X, ArrowUp, Play, Menu } from "lucide-react";
+import { useIsMobile } from "./components/ui/use-mobile";
 
 // Static assets live in /public/imports and are referenced by URL path.
 // Hero images
@@ -15,9 +16,9 @@ const heroImg7 = "/imports/01Hero/833d158ae763c459812b242f17917a96b903e1d7.png";
 const heroPicture32 = "/imports/01Hero/e8c226f0ce4ebb0e326ec38a4dee81fc142a5589.png";
 
 // Writing Sample images
-const wsImage10 = "/imports/02WritingSample/7500cd3cadaacce24f3eb950d585efc0e01c6e5d.png";
-const wsPhoto = "/imports/02WritingSample/87ebe7e7d714c3c7b3bdeb076940292155a70ca7.png";
-const wsImage9 = "/imports/02WritingSample/eb6add21a75ba300f515952b4877c3540c34ec6e.png";
+const wsImage10 = "/imports/02WritingSample/7500cd3cadaacce24f3eb950d585efc0e01c6e5d.webp";
+const wsPhoto = "/imports/02WritingSample/87ebe7e7d714c3c7b3bdeb076940292155a70ca7.webp";
+const wsImage9 = "/imports/02WritingSample/eb6add21a75ba300f515952b4877c3540c34ec6e.webp";
 
 // Letter of Endorsement
 const letterImg = "/imports/03LetterOfEndorsement/425056c595d4249bcc2d26dab5c417aee0627980.png";
@@ -297,39 +298,88 @@ function Lightbox({
 // ============================================================
 // NAVBAR
 // ============================================================
+const NAV_LINKS = [
+  { label: "Writing Sample", id: "writing-sample" },
+  { label: "Letter of Endorsement", id: "letter-of-endorsement" },
+  { label: "Creative Background", id: "homescape" },
+  { label: "CV & Links", id: "creative-experience" },
+];
+
 function Navbar() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const handleNav = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
+    setMobileOpen(false);
   };
 
   return (
-    <motion.nav
-      initial={{ opacity: 0, y: -16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-0 left-0 right-0 z-40 flex justify-center pt-10 pb-4 pointer-events-none"
-    >
-      <div
-        className="flex gap-16 pointer-events-auto"
-        style={{ fontFamily: BRAND, fontWeight: 500, fontSize: "1.1rem", color: BLUE }}
+    <>
+      {/* Desktop nav */}
+      <motion.nav
+        initial={{ opacity: 0, y: -16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed top-0 left-0 right-0 z-40 hidden md:flex justify-center pt-10 pb-4 pointer-events-none"
       >
-        {[
-          { label: "Writing Sample", id: "writing-sample" },
-          { label: "Letter of Endorsement", id: "letter-of-endorsement" },
-          { label: "Creative Background", id: "homescape" },
-          { label: "CV & Links", id: "creative-experience" },
-        ].map(({ label, id }) => (
-          <button
-            key={id}
-            onClick={() => handleNav(id)}
-            className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
+        <div
+          className="flex gap-16 pointer-events-auto"
+          style={{ fontFamily: BRAND, fontWeight: 500, fontSize: "1.1rem", color: BLUE }}
+        >
+          {NAV_LINKS.map(({ label, id }) => (
+            <button
+              key={id}
+              onClick={() => handleNav(id)}
+              className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </motion.nav>
+
+      {/* Mobile nav — menu button + full-screen overlay */}
+      <motion.div
+        initial={{ opacity: 0, y: -16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed top-0 right-0 z-50 flex md:hidden pt-6 pr-6"
+      >
+        <button
+          onClick={() => setMobileOpen((v) => !v)}
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileOpen}
+          className="flex items-center justify-center w-11 h-11 rounded-full bg-white shadow-md cursor-pointer"
+          style={{ color: BLUE }}
+        >
+          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </motion.div>
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-40 md:hidden bg-white flex flex-col items-center justify-center gap-8"
           >
-            {label}
-          </button>
-        ))}
-      </div>
-    </motion.nav>
+            {NAV_LINKS.map(({ label, id }) => (
+              <button
+                key={id}
+                onClick={() => handleNav(id)}
+                className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer text-center px-8"
+                style={{ fontFamily: BRAND, fontWeight: 500, fontSize: "1.4rem", color: BLUE }}
+              >
+                {label}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -337,6 +387,46 @@ function Navbar() {
 // HERO SECTION
 // ============================================================
 function HeroSection({ scrollY }: { scrollY: number }) {
+  const isMobile = useIsMobile();
+
+  const photos = [
+    {
+      src: heroPicture32,
+      factor: 0.1,
+      revealDelay: 0.55,
+      desktop: { left: "5.3%", top: "calc(42% + 6rem)", width: "17%", aspectRatio: "328/429" },
+      mobile: { left: "2%", top: "67%", width: "30%", aspectRatio: "328/429" },
+    },
+    {
+      src: heroPicture21,
+      factor: 0.15,
+      revealDelay: 0.67,
+      desktop: { left: "39%", top: "calc(50% + 6rem)", width: "30%", aspectRatio: "589/298" },
+      mobile: { left: "34%", top: "75%", width: "30%", aspectRatio: "589/298" },
+    },
+    {
+      src: heroPhoto,
+      factor: 0.08,
+      revealDelay: 0.79,
+      desktop: { left: "72%", top: "calc(40% + 6rem)", width: "18%", aspectRatio: "347/508" },
+      mobile: { left: "62%", top: "58%", width: "30%", aspectRatio: "347/508" },
+    },
+    {
+      src: heroImg7,
+      factor: 0.18,
+      revealDelay: 0.91,
+      desktop: { left: "28%", top: "calc(63% + 6rem)", width: "14.5%", aspectRatio: "276/422" },
+      mobile: { left: "16%", top: "84%", width: "30%", aspectRatio: "276/422" },
+    },
+    {
+      src: heroImg8,
+      factor: 0.13,
+      revealDelay: 1.03,
+      desktop: { left: "50%", top: "calc(78% + 6rem)", width: "22.5%", aspectRatio: "434/230" },
+      mobile: { left: "44%", top: "92%", width: "30%", aspectRatio: "434/230" },
+    },
+  ];
+
   return (
     <section
       id="hero"
@@ -344,56 +434,19 @@ function HeroSection({ scrollY }: { scrollY: number }) {
       style={{ minHeight: "100svh" }}
     >
       {/* Scattered photos */}
-      <ParallaxImage
-        src={heroPicture32}
-        alt="Project photo"
-        scrollY={scrollY}
-        factor={0.1}
-        reveal
-        revealDelay={0.55}
-        className="absolute rounded-sm shadow-sm"
-        style={{ left: "5.3%", top: "calc(42% + 6rem)", width: "17%", aspectRatio: "328/429" }}
-      />
-      <ParallaxImage
-        src={heroPicture21}
-        alt="Project photo"
-        scrollY={scrollY}
-        factor={0.15}
-        reveal
-        revealDelay={0.67}
-        className="absolute rounded-sm shadow-sm"
-        style={{ left: "39%", top: "calc(50% + 6rem)", width: "30%", aspectRatio: "589/298" }}
-      />
-      <ParallaxImage
-        src={heroPhoto}
-        alt="Project photo"
-        scrollY={scrollY}
-        factor={0.08}
-        reveal
-        revealDelay={0.79}
-        className="absolute rounded-sm shadow-sm"
-        style={{ left: "72%", top: "calc(40% + 6rem)", width: "18%", aspectRatio: "347/508" }}
-      />
-      <ParallaxImage
-        src={heroImg7}
-        alt="Project photo"
-        scrollY={scrollY}
-        factor={0.18}
-        reveal
-        revealDelay={0.91}
-        className="absolute rounded-sm shadow-sm"
-        style={{ left: "28%", top: "calc(63% + 6rem)", width: "14.5%", aspectRatio: "276/422" }}
-      />
-      <ParallaxImage
-        src={heroImg8}
-        alt="Project photo"
-        scrollY={scrollY}
-        factor={0.13}
-        reveal
-        revealDelay={1.03}
-        className="absolute rounded-sm shadow-sm"
-        style={{ left: "50%", top: "calc(78% + 6rem)", width: "22.5%", aspectRatio: "434/230" }}
-      />
+      {photos.map((p, i) => (
+        <ParallaxImage
+          key={i}
+          src={p.src}
+          alt="Project photo"
+          scrollY={scrollY}
+          factor={p.factor}
+          reveal
+          revealDelay={p.revealDelay}
+          className="absolute rounded-sm shadow-sm"
+          style={isMobile ? p.mobile : p.desktop}
+        />
+      ))}
 
       {/* Central text */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-10 px-4">
@@ -422,6 +475,29 @@ function HeroSection({ scrollY }: { scrollY: number }) {
 // WRITING SAMPLE SECTION
 // ============================================================
 function WritingSampleSection({ scrollY }: { scrollY: number }) {
+  const isMobile = useIsMobile();
+
+  const bandPhotos = [
+    {
+      src: wsImage10,
+      factor: 0.14,
+      desktop: { left: "7%", top: "34%", width: "15%", aspectRatio: "898/1260" },
+      mobile: { left: "5%", top: "2%", width: "30%", aspectRatio: "898/1260" },
+    },
+    {
+      src: wsPhoto,
+      factor: 0.18,
+      desktop: { left: "74%", top: "44%", width: "15%", aspectRatio: "359/269" },
+      mobile: { left: "60%", top: "25%", width: "30%", aspectRatio: "359/269" },
+    },
+    {
+      src: wsImage9,
+      factor: 0.05,
+      desktop: { left: "40%", top: "50%", width: "20%", aspectRatio: "718/409" },
+      mobile: { left: "35%", top: "47%", width: "30%", aspectRatio: "718/409" },
+    },
+  ];
+
   const excerpts = [
     {
       title: "Excerpt I — Bonds: The First Cosmology",
@@ -447,30 +523,17 @@ function WritingSampleSection({ scrollY }: { scrollY: number }) {
           as a rigid whole (no content scrolling within the frame). The differing
           `factor` values make them move at different speeds. */}
       <div className="relative h-80 md:h-[30rem] w-full">
-        <ParallaxImage
-          src={wsImage10}
-          alt="Writing sample image"
-          scrollY={scrollY}
-          factor={0.14}
-          className="absolute"
-          style={{ left: "7%", top: "34%", width: "15%", aspectRatio: "898/1260" }}
-        />
-        <ParallaxImage
-          src={wsImage9}
-          alt="Writing sample image"
-          scrollY={scrollY}
-          factor={0.05}
-          className="absolute"
-          style={{ left: "40%", top: "50%", width: "20%", aspectRatio: "718/409" }}
-        />
-        <ParallaxImage
-          src={wsPhoto}
-          alt="Writing sample image"
-          scrollY={scrollY}
-          factor={0.18}
-          className="absolute"
-          style={{ left: "74%", top: "44%", width: "15%", aspectRatio: "359/269" }}
-        />
+        {bandPhotos.map((p, i) => (
+          <ParallaxImage
+            key={i}
+            src={p.src}
+            alt="Writing sample image"
+            scrollY={scrollY}
+            factor={p.factor}
+            className="absolute"
+            style={isMobile ? p.mobile : p.desktop}
+          />
+        ))}
       </div>
 
       {/* Heading + intro */}
@@ -529,14 +592,13 @@ function LetterOfEndorsementSection() {
           </p>
         </FadeUp>
 
-        {/* Floating letter image */}
-        <div className="flex justify-center">
+        {/* Letter image — gentle reveal when scrolled into view */}
+        <FadeUp className="flex justify-center">
           <a
             href={letterPdf}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block"
-            style={{ animation: "floatY 5s ease-in-out infinite" }}
           >
             <div
               className="relative overflow-hidden rounded-sm"
@@ -549,7 +611,7 @@ function LetterOfEndorsementSection() {
               />
             </div>
           </a>
-        </div>
+        </FadeUp>
       </div>
     </section>
   );
@@ -573,12 +635,12 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
     {
       src: hsVideoThumb1,
       alt: "Homescape — Al Jazeera feature",
-      videoEmbedSrc: "https://iframe.mediadelivery.net/embed/504938/11700986-9e58-4255-b155-70af30cbebb7",
+      videoEmbedSrc: "https://iframe.mediadelivery.net/embed/504938/f6a09cec-73a1-424b-82ed-ebf85165bb27",
     },
     {
       src: hsVideoThumb2,
       alt: "Homescape — video",
-      videoEmbedSrc: "https://iframe.mediadelivery.net/embed/504938/f6a09cec-73a1-424b-82ed-ebf85165bb27",
+      videoEmbedSrc: "https://iframe.mediadelivery.net/embed/504938/11700986-9e58-4255-b155-70af30cbebb7",
     },
   ];
   const VIDEO_START = 6; // index of the first video in galleryMedia
@@ -643,7 +705,7 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
       </div>
 
       {/* Main content */}
-      <div className="max-w-[1200px] mx-auto px-8 md:px-16 py-20">
+      <div className="max-w-[1200px] mx-auto px-8 md:px-16 pt-8 pb-20 md:pt-20">
         <FadeUp>
           <h2
             style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(2rem, 4vw, 3.5rem)", color: "white", lineHeight: 1.2, marginBottom: "3rem" }}
@@ -890,19 +952,6 @@ function CreativeExperienceSection() {
 }
 
 // ============================================================
-// GLOBAL KEYFRAMES
-// ============================================================
-const GlobalStyles = () => (
-  <style>{`
-    @keyframes floatY {
-      0%   { transform: translateY(0px); }
-      50%  { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
-  `}</style>
-);
-
-// ============================================================
 // APP
 // ============================================================
 export default function App() {
@@ -927,7 +976,6 @@ export default function App() {
 
   return (
     <div className="bg-white min-h-screen">
-      <GlobalStyles />
       <Navbar />
       <HeroSection scrollY={scrollY} />
       <WritingSampleSection scrollY={scrollY} />
