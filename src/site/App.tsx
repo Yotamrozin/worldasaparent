@@ -454,9 +454,17 @@ function HeroSection({ scrollY }: { scrollY: number }) {
           initial={{ opacity: 0, filter: "blur(6px)", scale: 0.96 }}
           animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
           transition={{ duration: 0.95, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          style={{ fontFamily: BRAND, fontWeight: 700, fontSize: isMobile ? "clamp(2.7rem, 5.4vw, 4.32rem)" : "clamp(2rem, 4vw, 3.2rem)", color: BLUE, lineHeight: 0.9, letterSpacing: "-0.01em" }}
+          style={{ fontFamily: BRAND, fontWeight: 700, fontSize: isMobile ? "clamp(2.7rem, 5.4vw, 4.32rem)" : "clamp(2rem, 4vw, 3.2rem)", color: BLUE, lineHeight: isMobile ? 1.035 : 0.9, letterSpacing: "-0.01em" }}
         >
-          THE WORLD AS A PARENT
+          {isMobile ? (
+            <>
+              THE WORLD
+              <br />
+              AS A PARENT
+            </>
+          ) : (
+            "THE WORLD AS A PARENT"
+          )}
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, filter: "blur(6px)", scale: 0.96 }}
