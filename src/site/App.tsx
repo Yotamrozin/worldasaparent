@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Lenis from "lenis";
 import * as Dialog from "@radix-ui/react-dialog";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import { X, ArrowUp, Play, Menu } from "lucide-react";
 import { useIsMobile } from "./components/ui/use-mobile";
 
@@ -23,6 +23,10 @@ const wsImage9 = "/imports/02WritingSample/eb6add21a75ba300f515952b4877c3540c34e
 // Letter of Endorsement
 const letterImg = "/imports/03LetterOfEndorsement/425056c595d4249bcc2d26dab5c417aee0627980.png";
 const letterPdf = "/imports/Joey_Connolly_-_Letter_of_Endorsement.pdf";
+
+// Workshop images
+const WS_DIR = "/imports/03bWorkshop";
+const workshopPoster = `${WS_DIR}/workshop-poster-brick-lane.webp`;
 
 // Homescape images
 const homescapeBg = "/imports/04Homescape-1/homescape-poster.jpg";
@@ -301,6 +305,7 @@ function Lightbox({
 const NAV_LINKS = [
   { label: "Writing Sample", id: "writing-sample" },
   { label: "Letter of Endorsement", id: "letter-of-endorsement" },
+  { label: "Workshop", id: "workshop" },
   { label: "Creative Background", id: "homescape" },
   { label: "CV & Links", id: "creative-experience" },
 ];
@@ -324,7 +329,7 @@ function Navbar() {
         className="fixed top-0 left-0 right-0 z-40 hidden md:flex justify-center pt-10 pb-4 pointer-events-none"
       >
         <div
-          className="flex gap-16 pointer-events-auto"
+          className="flex gap-8 lg:gap-16 pointer-events-auto"
           style={{ fontFamily: BRAND, fontWeight: 500, fontSize: "1.1rem", color: BLUE }}
         >
           {NAV_LINKS.map(({ label, id }) => (
@@ -622,6 +627,127 @@ function LetterOfEndorsementSection() {
         </FadeUp>
       </div>
     </section>
+  );
+}
+
+// ============================================================
+// WORKSHOP SECTION
+// ============================================================
+function WorkshopSection() {
+  // Same layout as the Homescape gallery: index 0 is the large image.
+  const galleryMedia: (MediaItem & { w: number; h: number })[] = [
+    { src: `${WS_DIR}/workshop-table-overview-01.webp`, w: 1195, h: 896, alt: "Workshop participants gathered around a long cardboard-covered table, shaping clay under a hanging paper lantern." },
+    { src: `${WS_DIR}/workshop-clay-landscape-02.webp`, w: 1046, h: 790, alt: "A shared clay landscape on cardboard, with discs, coils and small figures joined by long clay threads." },
+    { src: `${WS_DIR}/workshop-clay-hand-03.webp`, w: 896, h: 1195, alt: "A clay imprint of a hand, held in an open palm." },
+    { src: `${WS_DIR}/workshop-participants-04.webp`, w: 1144, h: 912, alt: "Two participants lean over the table, smiling as they work small pieces of clay." },
+    { src: `${WS_DIR}/workshop-hands-table-05.webp`, w: 1600, h: 1229, alt: "Hands working clay around a table scattered with small sculptures, paper and clay packets." },
+    { src: `${WS_DIR}/workshop-clay-closeup-06.webp`, w: 1144, h: 898, alt: "A close view of clay pieces on cardboard: coils, a small cup, a cluster of balls and folded forms." },
+  ];
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIdx, setLightboxIdx] = useState(0);
+
+  const openLightbox = useCallback((idx: number) => {
+    setLightboxIdx(idx);
+    setLightboxOpen(true);
+  }, []);
+
+  const bodyStyle: React.CSSProperties = { fontFamily: BODY, fontSize: "clamp(0.9rem, 1.2vw, 1.1rem)", color: BLUE, lineHeight: 1.6, marginBottom: "1.25rem" };
+  const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0034E0]";
+
+  return (
+    <MotionConfig reducedMotion="user">
+      <section id="workshop" className="bg-white py-24">
+        <div className="max-w-[1200px] mx-auto px-8 md:px-16">
+          <FadeUp>
+            <h2
+              style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(2rem, 4vw, 3.5rem)", color: BLUE, lineHeight: 1.2, marginBottom: "3rem" }}
+            >
+              Workshop
+            </h2>
+          </FadeUp>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
+            {/* Text column */}
+            <div className="lg:col-span-3">
+              <FadeUp>
+                <h3
+                  style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(1.3rem, 2.2vw, 1.9rem)", color: BLUE, lineHeight: 1.4, marginBottom: "0.5rem" }}
+                >
+                  Clay and Conversation at House of Annetta
+                </h3>
+                <p style={{ fontFamily: BODY, fontSize: "clamp(0.8rem, 1vw, 0.9rem)", color: BLUE, lineHeight: 1.5, marginBottom: "1.75rem" }}>
+                  Antiuniversity NOW · House of Annetta, London · 16 October 2026 · 10 participants
+                </p>
+                <p style={bodyStyle}>
+                  In October 2026 I ran an evening workshop at House of Annetta in London, as part of Antiuniversity NOW. Ten people joined me for a session of making and conversation that explored the central question of my book, <em>The World as a Parent</em>.
+                </p>
+                <p style={bodyStyle}>
+                  The evening combined a guided meditation, writing prompts, and clay work, first individually and then together as a group.
+                </p>
+                <p style={bodyStyle}>
+                  With participants' permission, what is shared in the room can feed into the manuscript, whether a story, a viewpoint, or a change to language, structure or examples. This was my second test of the format, following a 2025 test workshop at Carnival4David.
+                </p>
+              </FadeUp>
+            </div>
+
+            {/* Poster column */}
+            <div className="lg:col-span-2">
+              <FadeUp delay={0.15}>
+                <h3 style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "1.1rem", color: BLUE, marginBottom: "1.5rem" }}>
+                  How people heard about it
+                </h3>
+                <figure className="max-w-[360px]">
+                  <img
+                    src={workshopPoster}
+                    alt="Poster for The World as a Parent workshop, a collage of religious mother-and-child imagery, in a window on Brick Lane, London."
+                    width={896}
+                    height={1195}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-auto rounded-sm"
+                  />
+                  <figcaption style={{ fontFamily: BODY, fontSize: "clamp(0.8rem, 1vw, 0.9rem)", color: BLUE, lineHeight: 1.5, marginTop: "0.75rem" }}>
+                    The poster for the evening, hung on Brick Lane, London, in early October 2026.
+                  </figcaption>
+                </figure>
+              </FadeUp>
+            </div>
+          </div>
+
+          {/* Photo gallery — featured large image + tiles */}
+          <FadeUp className="mt-16">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {galleryMedia.map((item, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => openLightbox(idx)}
+                  aria-label={`Open photo ${idx + 1} of ${galleryMedia.length}`}
+                  className={`block overflow-hidden rounded-sm cursor-pointer group/tile ${idx === 0 ? "col-span-2 row-span-2" : ""} ${focusRing}`}
+                  style={idx === 0 ? undefined : { aspectRatio: "424/255" }}
+                >
+                  <img
+                    src={item.src}
+                    alt={item.alt}
+                    width={item.w}
+                    height={item.h}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover/tile:scale-105"
+                  />
+                </button>
+              ))}
+            </div>
+          </FadeUp>
+        </div>
+
+        <Lightbox
+          images={galleryMedia}
+          startIndex={lightboxIdx}
+          open={lightboxOpen}
+          onClose={() => setLightboxOpen(false)}
+        />
+      </section>
+    </MotionConfig>
   );
 }
 
@@ -988,6 +1114,7 @@ export default function App() {
       <HeroSection scrollY={scrollY} />
       <WritingSampleSection scrollY={scrollY} />
       <LetterOfEndorsementSection />
+      <WorkshopSection />
       <HomescapeSection scrollY={scrollY} />
       <CreativeExperienceSection />
     </div>
