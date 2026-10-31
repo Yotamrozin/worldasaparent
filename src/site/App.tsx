@@ -557,8 +557,26 @@ function WritingSampleSection({ scrollY }: { scrollY: number }) {
           >
             Writing Sample
           </h2>
+          <p style={{ fontFamily: BODY, fontSize: "clamp(0.95rem, 1.4vw, 1.25rem)", color: BLUE, lineHeight: 1.5, maxWidth: "900px", marginBottom: "1.25rem" }}>
+            <em>The World as a Parent</em> is a work of literary nonfiction in development, moving between life-writing, history and imaginative inquiry. At its heart is an image from the educator Janusz Korczak: in his 1919 parental advice book, he compares the fetus in the womb with the newborn, thrust into a gargantuan universe that becomes its lifelong dwelling. The book asks whether that original intimacy, shared flesh, blood and rhythm with a world that made us, can be found again in our bond with the world as a whole. The manuscript is at first-draft stage, with a second draft of around 80,000 to 90,000 words planned. It is being developed alongside participatory workshops, such as the one described{" "}
+            <a
+              href="#workshop"
+              onClick={(e) => {
+                // Lenis doesn't smooth-scroll hash links, so scroll like the nav does.
+                e.preventDefault();
+                document.getElementById("workshop")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="underline underline-offset-4 hover:opacity-75 transition-opacity focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0034E0]"
+            >
+              below
+            </a>
+            .
+          </p>
           <p style={{ fontFamily: BODY, fontSize: "clamp(0.95rem, 1.4vw, 1.25rem)", color: BLUE, lineHeight: 1.5, maxWidth: "900px" }}>
             Three short excerpts from <em>The World as a Parent</em> illustrate the book's movement between historical exploration, poetic inquiry, and narrative life-writing. Together they show how the book weaves ancient cosmological narratives, our shared experience of being in the womb, and the questions sparked by Janusz Korczak's life and writing into a single, sustained literary inquiry into the world as a parent.
+          </p>
+          <p style={{ fontFamily: BODY, fontWeight: 600, fontSize: "clamp(0.85rem, 1.1vw, 1rem)", color: BLUE, lineHeight: 1.6, marginTop: "1.5rem" }}>
+            Excerpts from the working draft
           </p>
         </FadeUp>
       </div>
