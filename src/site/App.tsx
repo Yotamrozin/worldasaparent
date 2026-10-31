@@ -27,6 +27,10 @@ const letterPdf = "/imports/Joey_Connolly_-_Letter_of_Endorsement.pdf";
 // Workshop images
 const WS_DIR = "/imports/03bWorkshop";
 const workshopPoster = `${WS_DIR}/workshop-poster-brick-lane.webp`;
+const workshopWordList: MediaItem = {
+  src: `${WS_DIR}/workshop-word-list.webp`,
+  alt: "Handwritten list of words that participants called out when asked what they associate with parenthood.",
+};
 
 // Homescape images
 const homescapeBg = "/imports/04Homescape-1/homescape-poster.jpg";
@@ -663,6 +667,7 @@ function WorkshopSection() {
   ];
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(0);
+  const [wordListOpen, setWordListOpen] = useState(false);
 
   const openLightbox = useCallback((idx: number) => {
     setLightboxIdx(idx);
@@ -756,8 +761,40 @@ function WorkshopSection() {
               ))}
             </div>
           </FadeUp>
+
+          {/* Word list — shown as the photo only, click to enlarge */}
+          <FadeUp className="mt-20">
+            <h3 style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "1.1rem", color: BLUE, marginBottom: "1rem" }}>
+              What came up
+            </h3>
+            <p style={{ ...bodyStyle, maxWidth: "720px", marginBottom: "2rem" }}>
+              At the start of the evening, participants called out the words they associate with parenthood. This is the list, as it was written up in the room.
+            </p>
+            <button
+              type="button"
+              onClick={() => setWordListOpen(true)}
+              aria-label="Enlarge the word list"
+              className={`block w-full max-w-[560px] overflow-hidden rounded-sm cursor-zoom-in ${focusRing}`}
+            >
+              <img
+                src={workshopWordList.src}
+                alt={workshopWordList.alt}
+                width={1200}
+                height={1870}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-auto block"
+              />
+            </button>
+          </FadeUp>
         </div>
 
+        <Lightbox
+          images={[workshopWordList]}
+          startIndex={0}
+          open={wordListOpen}
+          onClose={() => setWordListOpen(false)}
+        />
         <Lightbox
           images={galleryMedia}
           startIndex={lightboxIdx}
