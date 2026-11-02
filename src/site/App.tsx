@@ -28,8 +28,8 @@ const letterPdf = "/imports/Joey_Connolly_-_Letter_of_Endorsement.pdf";
 const WS_DIR = "/imports/03bWorkshop";
 const workshopPoster = `${WS_DIR}/workshop-poster-brick-lane.webp`;
 const workshopWordList: MediaItem = {
-  src: `${WS_DIR}/workshop-word-list.webp`,
-  alt: "Handwritten list of words that participants called out when asked what they associate with parenthood.",
+  src: `${WS_DIR}/workshop-association-list.webp`,
+  alt: "Handwritten list of keywords and themes that came up as participants shared their responses to a writing prompt.",
 };
 
 // Homescape images
@@ -559,9 +559,9 @@ function WritingSampleSection({ scrollY }: { scrollY: number }) {
           <h2
             style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(2rem, 4vw, 3.5rem)", color: BLUE, lineHeight: 1.2, marginBottom: "1.25rem" }}
           >
-            Writing Sample
+            The Book
           </h2>
-          <p style={{ fontFamily: BODY, fontSize: "clamp(0.95rem, 1.4vw, 1.25rem)", color: BLUE, lineHeight: 1.5, maxWidth: "900px", marginBottom: "1.25rem" }}>
+          <p style={{ fontFamily: BODY, fontSize: "clamp(0.95rem, 1.4vw, 1.25rem)", color: BLUE, lineHeight: 1.5, maxWidth: "900px", marginBottom: "3rem" }}>
             <em>The World as a Parent</em> is a work of literary nonfiction in development, moving between life-writing, history and imaginative inquiry. At its heart is an image from the educator Janusz Korczak: in his 1919 parental advice book, he compares the fetus in the womb with the newborn, thrust into a gargantuan universe that becomes its lifelong dwelling. The book asks whether that original intimacy, shared flesh, blood and rhythm with a world that made us, can be found again in our bond with the world as a whole. The manuscript is at first-draft stage, with a second draft of around 80,000 to 90,000 words planned. It is being developed alongside participatory workshops, such as the one described{" "}
             <a
               href="#workshop"
@@ -576,6 +576,11 @@ function WritingSampleSection({ scrollY }: { scrollY: number }) {
             </a>
             .
           </p>
+          <h3
+            style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(1.3rem, 2.2vw, 1.9rem)", color: BLUE, lineHeight: 1.4, marginBottom: "1.25rem" }}
+          >
+            Writing Sample
+          </h3>
           <p style={{ fontFamily: BODY, fontSize: "clamp(0.95rem, 1.4vw, 1.25rem)", color: BLUE, lineHeight: 1.5, maxWidth: "900px" }}>
             Three short excerpts from <em>The World as a Parent</em> illustrate the book's movement between historical exploration, poetic inquiry, and narrative life-writing. Together they show how the book weaves ancient cosmological narratives, our shared experience of being in the womb, and the questions sparked by Janusz Korczak's life and writing into a single, sustained literary inquiry into the world as a parent.
           </p>
@@ -768,7 +773,7 @@ function WorkshopSection() {
               What came up
             </h3>
             <p style={{ ...bodyStyle, maxWidth: "720px", marginBottom: "2rem" }}>
-              At the start of the evening, participants called out the words they associate with parenthood. This is the list, as it was written up in the room.
+              The evening opened with a guided meditation that helped people land in their bodies and in the room together, and touch on the idea of parenthood. Participants then worked with a writing prompt. As they shared their experience, I wrote down on the spot the keywords and themes that came up. This is that list.
             </p>
             <button
               type="button"
@@ -779,8 +784,8 @@ function WorkshopSection() {
               <img
                 src={workshopWordList.src}
                 alt={workshopWordList.alt}
-                width={1200}
-                height={1870}
+                width={896}
+                height={1195}
                 loading="lazy"
                 decoding="async"
                 className="w-full h-auto block"
