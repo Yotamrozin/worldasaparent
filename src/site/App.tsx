@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Lenis from "lenis";
 import * as Dialog from "@radix-ui/react-dialog";
-import { motion, AnimatePresence, MotionConfig } from "motion/react";
+import { motion, AnimatePresence, MotionConfig, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { X, ArrowUp, Play, Menu } from "lucide-react";
 import { useIsMobile } from "./components/ui/use-mobile";
 
@@ -276,7 +276,7 @@ function Lightbox({
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
-              className="w-[90vw] max-w-[1100px] aspect-video rounded-lg overflow-hidden shadow-2xl bg-black"
+              className="w-[90vw] max-w-[1100px] aspect-video overflow-hidden shadow-2xl bg-black"
             >
               <iframe
                 className="w-full h-full"
@@ -294,7 +294,7 @@ function Lightbox({
               transition={{ duration: 0.3 }}
               src={current?.src}
               alt={current?.alt ?? ""}
-              className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl"
+              className="max-w-[90vw] max-h-[85vh] object-contain shadow-2xl"
             />
           )}
         </Dialog.Content>
@@ -306,9 +306,17 @@ function Lightbox({
 // ============================================================
 // NAVBAR
 // ============================================================
-const NAV_LINKS = [
-  { label: "Writing Sample", id: "writing-sample" },
-  { label: "Letter of Endorsement", id: "letter-of-endorsement" },
+type NavLink = { label: string; id: string; children?: { label: string; id: string }[] };
+
+const NAV_LINKS: NavLink[] = [
+  {
+    label: "The Book",
+    id: "writing-sample",
+    children: [
+      { label: "Writing Sample", id: "writing-sample-excerpts" },
+      { label: "Letter of Endorsement", id: "letter-of-endorsement" },
+    ],
+  },
   { label: "Workshop", id: "workshop" },
   { label: "Creative Background", id: "homescape" },
   { label: "CV & Links", id: "creative-experience" },
@@ -333,17 +341,35 @@ function Navbar() {
         className="fixed top-0 left-0 right-0 z-40 hidden md:flex justify-center pt-10 pb-4 pointer-events-none"
       >
         <div
-          className="flex gap-8 lg:gap-16 pointer-events-auto"
+          className="flex gap-16 pointer-events-auto"
           style={{ fontFamily: BRAND, fontWeight: 500, fontSize: "1.1rem", color: BLUE }}
         >
-          {NAV_LINKS.map(({ label, id }) => (
-            <button
-              key={id}
-              onClick={() => handleNav(id)}
-              className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
-            >
-              {label}
-            </button>
+          {NAV_LINKS.map(({ label, id, children }) => (
+            <div key={id} className="relative group/nav">
+              <button
+                onClick={() => handleNav(id)}
+                aria-haspopup={children ? "true" : undefined}
+                className="opacity-80 hover:opacity-100 group-hover/nav:opacity-100 transition-opacity cursor-pointer"
+              >
+                {label}
+              </button>
+              {children && (
+                // Opens on hover, and on keyboard focus via focus-within.
+                <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 hidden group-hover/nav:block group-focus-within/nav:block">
+                  <div className="flex flex-col gap-2 bg-white px-5 py-3 shadow-sm whitespace-nowrap" style={{ fontSize: "1rem" }}>
+                    {children.map((c) => (
+                      <button
+                        key={c.id}
+                        onClick={() => handleNav(c.id)}
+                        className="text-left opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
+                      >
+                        {c.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </div>
       </motion.nav>
@@ -375,15 +401,26 @@ function Navbar() {
             transition={{ duration: 0.25 }}
             className="fixed inset-0 z-40 md:hidden bg-white flex flex-col items-center justify-center gap-8"
           >
-            {NAV_LINKS.map(({ label, id }) => (
-              <button
-                key={id}
-                onClick={() => handleNav(id)}
-                className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer text-center px-8"
-                style={{ fontFamily: BRAND, fontWeight: 500, fontSize: "1.4rem", color: BLUE }}
-              >
-                {label}
-              </button>
+            {NAV_LINKS.map(({ label, id, children }) => (
+              <div key={id} className="flex flex-col items-center gap-3">
+                <button
+                  onClick={() => handleNav(id)}
+                  className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer text-center px-8"
+                  style={{ fontFamily: BRAND, fontWeight: 500, fontSize: "1.4rem", color: BLUE }}
+                >
+                  {label}
+                </button>
+                {children?.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => handleNav(c.id)}
+                    className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer text-center px-8"
+                    style={{ fontFamily: BRAND, fontWeight: 500, fontSize: "1.1rem", color: BLUE }}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
             ))}
           </motion.div>
         )}
@@ -452,7 +489,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
           factor={p.factor}
           reveal
           revealDelay={p.revealDelay}
-          className="absolute rounded-sm shadow-sm"
+          className="absolute shadow-sm"
           style={isMobile ? p.mobile : p.desktop}
         />
       ))}
@@ -577,6 +614,8 @@ function WritingSampleSection({ scrollY }: { scrollY: number }) {
             .
           </p>
           <h3
+            id="writing-sample-excerpts"
+            className="scroll-mt-24"
             style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(1.3rem, 2.2vw, 1.9rem)", color: BLUE, lineHeight: 1.4, marginBottom: "1.25rem" }}
           >
             Writing Sample
@@ -641,7 +680,7 @@ function LetterOfEndorsementSection() {
             className="inline-block"
           >
             <div
-              className="relative overflow-hidden rounded-sm"
+              className="relative overflow-hidden"
               style={{ width: "min(520px, 80vw)", boxShadow: "0 0 50px rgba(0,0,0,0.18), 0 0 0 6px #000" }}
             >
               <img
@@ -660,16 +699,138 @@ function LetterOfEndorsementSection() {
 // ============================================================
 // WORKSHOP SECTION
 // ============================================================
+// `size` and `top` place each photo in the strip (vh on desktop), giving the
+// same irregular, scattered rhythm as the hero photos.
+type StripItem = MediaItem & { w: number; h: number; size: number; top: number };
+
+const WORKSHOP_PHOTOS: StripItem[] = [
+  { src: `${WS_DIR}/workshop-table-overview-01.webp`, w: 1195, h: 896, size: 56, top: 16, alt: "Workshop participants gathered around a long cardboard-covered table, shaping clay under a hanging paper lantern." },
+  { src: `${WS_DIR}/workshop-clay-hand-03.webp`, w: 896, h: 1195, size: 40, top: 44, alt: "A clay imprint of a hand, held in an open palm." },
+  { src: `${WS_DIR}/workshop-reaching-across-07.webp`, w: 1076, h: 806, size: 34, top: 14, alt: "Participants laugh and reach across the cardboard-covered table as they press and shape clay." },
+  { src: `${WS_DIR}/workshop-clay-landscape-02.webp`, w: 1046, h: 790, size: 30, top: 56, alt: "A shared clay landscape on cardboard, with discs, coils and small figures joined by long clay threads." },
+  { src: `${WS_DIR}/workshop-participants-04.webp`, w: 1144, h: 912, size: 48, top: 26, alt: "Two participants lean over the table, smiling as they work small pieces of clay." },
+  { src: `${WS_DIR}/workshop-hands-gesturing-08.webp`, w: 1195, h: 896, size: 32, top: 12, alt: "Hands gesture across the table among clay pieces, paper and clay packets." },
+  { src: `${WS_DIR}/workshop-pressing-clay-09.webp`, w: 1121, h: 907, size: 44, top: 44, alt: "Participants lean over the table pressing clay into flat shapes, under a paper lantern." },
+  { src: `${WS_DIR}/workshop-clay-closeup-06.webp`, w: 1144, h: 898, size: 28, top: 20, alt: "A close view of clay pieces on cardboard: coils, a small cup, a cluster of balls and folded forms." },
+  { src: `${WS_DIR}/workshop-leaning-in-10.webp`, w: 1195, h: 896, size: 50, top: 30, alt: "Three participants lean in over the table, one looking up while shaping clay." },
+  { src: `${WS_DIR}/workshop-hands-table-05.webp`, w: 1600, h: 1229, size: 34, top: 58, alt: "Hands working clay around a table scattered with small sculptures, paper and clay packets." },
+  { src: `${WS_DIR}/workshop-group-at-table-11.webp`, w: 1600, h: 1200, size: 54, top: 18, alt: "Participants seated and standing around the table, talking and working with clay." },
+];
+
+// Sideways pixels moved per pixel of vertical scroll (keeps the pinned stretch to ~3 screens).
+const STRIP_SPEED = 1.75;
+const STRIP_FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0034E0]";
+// Left/right inset so the first and last photos line up with the page content.
+const STRIP_INSET = "max(2rem, calc((100vw - 1200px) / 2 + 4rem))";
+
+function StripPhoto({ item, idx, onOpen, onFocus, style }: {
+  item: StripItem;
+  idx: number;
+  onOpen: (idx: number) => void;
+  onFocus?: (el: HTMLElement) => void;
+  style: React.CSSProperties;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(idx)}
+      onFocus={onFocus && ((e) => onFocus(e.currentTarget))}
+      aria-label={`Open photo ${idx + 1} of ${WORKSHOP_PHOTOS.length}`}
+      className={`shrink-0 overflow-hidden cursor-pointer group/tile ${STRIP_FOCUS}`}
+      style={{ aspectRatio: `${item.w}/${item.h}`, ...style }}
+    >
+      <img
+        src={item.src}
+        alt={item.alt}
+        width={item.w}
+        height={item.h}
+        loading="lazy"
+        decoding="async"
+        className="w-full h-full object-cover transition-transform duration-500 group-hover/tile:scale-105"
+      />
+    </button>
+  );
+}
+
+// Desktop: the strip pins to the viewport and vertical scrolling slides it sideways.
+function PinnedStrip({ onOpen }: { onOpen: (idx: number) => void }) {
+  const outerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [distance, setDistance] = useState(0);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const measure = () => setDistance(Math.max(track.scrollWidth - window.innerWidth, 0));
+    const ro = new ResizeObserver(measure);
+    ro.observe(track);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  // Outer height = one screen + distance / SPEED, so 1px down = SPEED px sideways.
+  const { scrollYProgress } = useScroll({ target: outerRef, offset: ["start start", "end end"] });
+  const x = useTransform(scrollYProgress, [0, 1], [0, -distance]);
+
+  // Keyboard users: tabbing to an off-screen photo scrolls the page so it slides into view.
+  const revealOnFocus = (el: HTMLElement) => {
+    const outer = outerRef.current;
+    if (!outer) return;
+    const along = Math.min(Math.max(el.offsetLeft + el.offsetWidth / 2 - window.innerWidth / 2, 0), distance);
+    window.scrollTo({ top: outer.getBoundingClientRect().top + window.scrollY + along / STRIP_SPEED });
+  };
+
+  return (
+    <div ref={outerRef} style={{ height: `calc(100vh + ${distance / STRIP_SPEED}px)` }}>
+      <div className="sticky top-0 h-screen overflow-hidden">
+        <motion.div
+          ref={trackRef}
+          className="flex items-start gap-10 h-full w-max"
+          style={{ x, paddingLeft: STRIP_INSET, paddingRight: STRIP_INSET }}
+        >
+          {WORKSHOP_PHOTOS.map((item, idx) => (
+            <StripPhoto
+              key={idx}
+              item={item}
+              idx={idx}
+              onOpen={onOpen}
+              onFocus={revealOnFocus}
+              style={{ height: `${item.size}vh`, marginTop: `${item.top}vh` }}
+            />
+          ))}
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+// Phones and reduced motion: a plain swipeable strip, still at irregular sizes.
+function SwipeStrip({ onOpen }: { onOpen: (idx: number) => void }) {
+  return (
+    <div
+      className="flex items-start gap-4 overflow-x-auto snap-x snap-proximity pb-4"
+      style={{ paddingLeft: STRIP_INSET, paddingRight: STRIP_INSET, scrollPaddingLeft: STRIP_INSET }}
+    >
+      {WORKSHOP_PHOTOS.map((item, idx) => (
+        <StripPhoto
+          key={idx}
+          item={item}
+          idx={idx}
+          onOpen={onOpen}
+          style={{ height: `${Math.round(item.size * 4)}px`, marginTop: `${item.top}px`, scrollSnapAlign: "start" }}
+        />
+      ))}
+    </div>
+  );
+}
+
 function WorkshopSection() {
-  // Same layout as the Homescape gallery: index 0 is the large image.
-  const galleryMedia: (MediaItem & { w: number; h: number })[] = [
-    { src: `${WS_DIR}/workshop-table-overview-01.webp`, w: 1195, h: 896, alt: "Workshop participants gathered around a long cardboard-covered table, shaping clay under a hanging paper lantern." },
-    { src: `${WS_DIR}/workshop-clay-landscape-02.webp`, w: 1046, h: 790, alt: "A shared clay landscape on cardboard, with discs, coils and small figures joined by long clay threads." },
-    { src: `${WS_DIR}/workshop-clay-hand-03.webp`, w: 896, h: 1195, alt: "A clay imprint of a hand, held in an open palm." },
-    { src: `${WS_DIR}/workshop-participants-04.webp`, w: 1144, h: 912, alt: "Two participants lean over the table, smiling as they work small pieces of clay." },
-    { src: `${WS_DIR}/workshop-hands-table-05.webp`, w: 1600, h: 1229, alt: "Hands working clay around a table scattered with small sculptures, paper and clay packets." },
-    { src: `${WS_DIR}/workshop-clay-closeup-06.webp`, w: 1144, h: 898, alt: "A close view of clay pieces on cardboard: coils, a small cup, a cluster of balls and folded forms." },
-  ];
+  const isMobile = useIsMobile();
+  const reduceMotion = useReducedMotion();
+  const galleryMedia = WORKSHOP_PHOTOS;
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(0);
   const [wordListOpen, setWordListOpen] = useState(false);
@@ -703,10 +864,10 @@ function WorkshopSection() {
                   Clay and Conversation at House of Annetta
                 </h3>
                 <p style={{ fontFamily: BODY, fontSize: "clamp(0.8rem, 1vw, 0.9rem)", color: BLUE, lineHeight: 1.5, marginBottom: "1.75rem" }}>
-                  Antiuniversity NOW · House of Annetta, London · 16 October 2026 · 10 participants
+                  Antiuniversity NOW · House of Annetta, London · 16 October 2026 · 11 participants
                 </p>
                 <p style={bodyStyle}>
-                  In October 2026 I ran an evening workshop at House of Annetta in London, as part of Antiuniversity NOW. Ten people joined me for a session of making and conversation that explored the central question of my book, <em>The World as a Parent</em>.
+                  In October 2026 I ran an evening workshop at House of Annetta in London, as part of Antiuniversity NOW. Eleven people joined me for a session of making and conversation that explored the central question of my book, <em>The World as a Parent</em>.
                 </p>
                 <p style={bodyStyle}>
                   The evening combined a guided meditation, writing prompts, and clay work, first individually and then together as a group.
@@ -731,7 +892,7 @@ function WorkshopSection() {
                     height={1195}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-auto rounded-sm"
+                    className="w-full h-auto"
                   />
                   <figcaption style={{ fontFamily: BODY, fontSize: "clamp(0.8rem, 1vw, 0.9rem)", color: BLUE, lineHeight: 1.5, marginTop: "0.75rem" }}>
                     The poster for the evening, hung on Brick Lane, London, in early October 2026.
@@ -741,32 +902,14 @@ function WorkshopSection() {
             </div>
           </div>
 
-          {/* Photo gallery — featured large image + tiles */}
-          <FadeUp className="mt-16">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {galleryMedia.map((item, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => openLightbox(idx)}
-                  aria-label={`Open photo ${idx + 1} of ${galleryMedia.length}`}
-                  className={`block overflow-hidden rounded-sm cursor-pointer group/tile ${idx === 0 ? "col-span-2 row-span-2" : ""} ${focusRing}`}
-                  style={idx === 0 ? undefined : { aspectRatio: "424/255" }}
-                >
-                  <img
-                    src={item.src}
-                    alt={item.alt}
-                    width={item.w}
-                    height={item.h}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover/tile:scale-105"
-                  />
-                </button>
-              ))}
-            </div>
-          </FadeUp>
+        </div>
 
+        {/* Photo gallery — full-width strip at irregular sizes */}
+        <div className="mt-16">
+          {isMobile || reduceMotion ? <SwipeStrip onOpen={openLightbox} /> : <PinnedStrip onOpen={openLightbox} />}
+        </div>
+
+        <div className="max-w-[1200px] mx-auto px-8 md:px-16">
           {/* Word list — shown as the photo only, click to enlarge */}
           <FadeUp className="mt-20">
             <h3 style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "1.1rem", color: BLUE, marginBottom: "1rem" }}>
@@ -779,7 +922,7 @@ function WorkshopSection() {
               type="button"
               onClick={() => setWordListOpen(true)}
               aria-label="Enlarge the word list"
-              className={`block w-full max-w-[560px] overflow-hidden rounded-sm cursor-zoom-in ${focusRing}`}
+              className={`block w-full max-w-[560px] overflow-hidden cursor-zoom-in ${focusRing}`}
             >
               <img
                 src={workshopWordList.src}
@@ -958,7 +1101,7 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {/* Featured large image (index 0) */}
             <div
-              className="col-span-2 row-span-2 overflow-hidden rounded-sm cursor-pointer"
+              className="col-span-2 row-span-2 overflow-hidden cursor-pointer"
               onClick={() => openLightbox(0)}
             >
               <img
@@ -973,7 +1116,7 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
               return (
                 <div
                   key={idx}
-                  className="overflow-hidden rounded-sm cursor-pointer group/tile"
+                  className="overflow-hidden cursor-pointer group/tile"
                   style={{ aspectRatio: "424/255" }}
                   onClick={() => openLightbox(idx)}
                 >
@@ -996,7 +1139,7 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
               return (
                 <div
                   key={idx}
-                  className="relative overflow-hidden rounded-sm cursor-pointer group/tile"
+                  className="relative overflow-hidden cursor-pointer group/tile"
                   style={{ aspectRatio: "16/9" }}
                   onClick={() => openLightbox(idx)}
                 >
@@ -1083,13 +1226,13 @@ function CreativeExperienceSection() {
               href={PORTFOLIO_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="group block overflow-hidden rounded-[40px] shadow-sm"
+              className="group block overflow-hidden shadow-sm"
               aria-label="Visit yotamrozin.com"
             >
               <img
                 src={yotamSnapshot}
                 alt="Snapshot of yotamrozin.com"
-                className="w-full h-auto object-cover rounded-[40px] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
               />
             </a>
           </FadeUp>
