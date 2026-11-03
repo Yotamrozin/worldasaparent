@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Lenis from "lenis";
 import * as Dialog from "@radix-ui/react-dialog";
-import { motion, AnimatePresence, MotionConfig, useScroll, useTransform, useReducedMotion } from "motion/react";
+import { motion, AnimatePresence, MotionConfig, useScroll, useTransform, useReducedMotion, useInView } from "motion/react";
 import { X, ArrowUp, Play, Menu } from "lucide-react";
 import { useIsMobile } from "./components/ui/use-mobile";
 
@@ -27,6 +27,8 @@ const letterPdf = "/imports/Joey_Connolly_-_Letter_of_Endorsement.pdf";
 // Workshop images
 const WS_DIR = "/imports/03bWorkshop";
 const workshopPoster = `${WS_DIR}/workshop-poster-brick-lane.webp`;
+const workshopReel = `${WS_DIR}/workshop-reel-house-of-annetta.mp4`;
+const workshopReelPoster = `${WS_DIR}/workshop-reel-house-of-annetta-poster.webp`;
 const workshopWordList: MediaItem = {
   src: `${WS_DIR}/workshop-association-list.webp`,
   alt: "Handwritten list of keywords and themes that came up as participants shared their responses to a writing prompt.",
@@ -835,6 +837,17 @@ function WorkshopSection() {
   const [lightboxIdx, setLightboxIdx] = useState(0);
   const [wordListOpen, setWordListOpen] = useState(false);
 
+  // Reel autoplays only while on screen, and never under reduced motion
+  // (native controls stay available to play or pause it).
+  const reelRef = useRef<HTMLVideoElement>(null);
+  const reelInView = useInView(reelRef, { margin: "200px" });
+  useEffect(() => {
+    const v = reelRef.current;
+    if (!v) return;
+    if (reelInView && !reduceMotion) v.play().catch(() => {});
+    else v.pause();
+  }, [reelInView, reduceMotion]);
+
   const openLightbox = useCallback((idx: number) => {
     setLightboxIdx(idx);
     setLightboxOpen(true);
@@ -884,20 +897,41 @@ function WorkshopSection() {
                 <h3 style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "1.1rem", color: BLUE, marginBottom: "1.5rem" }}>
                   How people heard about it
                 </h3>
-                <figure className="max-w-[360px]">
-                  <img
-                    src={workshopPoster}
-                    alt="Poster for The World as a Parent workshop, a collage of religious mother-and-child imagery, in a window on Brick Lane, London."
-                    width={896}
-                    height={1195}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-auto"
-                  />
-                  <figcaption style={{ fontFamily: BODY, fontSize: "clamp(0.8rem, 1vw, 0.9rem)", color: BLUE, lineHeight: 1.5, marginTop: "0.75rem" }}>
-                    The poster for the evening, hung on Brick Lane, London, in early October 2026.
-                  </figcaption>
-                </figure>
+                <div className="grid grid-cols-2 gap-4 items-start">
+                  <figure>
+                    <img
+                      src={workshopPoster}
+                      alt="Poster for The World as a Parent workshop, a collage of religious mother-and-child imagery, in a window on Brick Lane, London."
+                      width={896}
+                      height={1195}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-auto"
+                    />
+                    <figcaption style={{ fontFamily: BODY, fontSize: "clamp(0.8rem, 1vw, 0.9rem)", color: BLUE, lineHeight: 1.5, marginTop: "0.75rem" }}>
+                      The poster for the evening, hung on Brick Lane, London, in early October 2026.
+                    </figcaption>
+                  </figure>
+                  <figure>
+                    <video
+                      ref={reelRef}
+                      src={workshopReel}
+                      poster={workshopReelPoster}
+                      width={720}
+                      height={1280}
+                      muted
+                      loop
+                      playsInline
+                      controls
+                      preload="none"
+                      aria-label="Promotional reel for the workshop: a collage of mother-and-child imagery with the title The World as a Parent, House of Annetta, 16/10, part of the Antiuniversity NOW festival 2026."
+                      className="w-full h-auto block"
+                    />
+                    <figcaption style={{ fontFamily: BODY, fontSize: "clamp(0.8rem, 1vw, 0.9rem)", color: BLUE, lineHeight: 1.5, marginTop: "0.75rem" }}>
+                      The reel I made to promote the evening, run as Meta ads.
+                    </figcaption>
+                  </figure>
+                </div>
               </FadeUp>
             </div>
           </div>
@@ -916,7 +950,7 @@ function WorkshopSection() {
               What came up
             </h3>
             <p style={{ ...bodyStyle, maxWidth: "720px", marginBottom: "2rem" }}>
-              The evening opened with a guided meditation that helped people land in their bodies and in the room together, and touch on the idea of parenthood. Participants then worked with a writing prompt. As they shared their experience, I wrote down on the spot the keywords and themes that came up. This is that list.
+              The evening opened with a guided meditation that helped people land in their bodies and in the room together, and touch on the idea of parenthood. Participants then worked with a writing prompt, followed by intuitive clay sculpting. As they shared their experiences, I wrote down, on the spot, the keywords and themes that came up. This is that list.
             </p>
             <button
               type="button"
