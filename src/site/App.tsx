@@ -928,7 +928,7 @@ function WorkshopSection() {
                       className="w-full h-auto block"
                     />
                     <figcaption style={{ fontFamily: BODY, fontSize: "clamp(0.8rem, 1vw, 0.9rem)", color: BLUE, lineHeight: 1.5, marginTop: "0.75rem" }}>
-                      The reel I made to promote the evening, run as Meta ads.
+                      The reel I made to promote the evening, which ran as Meta ads from 10 to 16 October 2026.
                     </figcaption>
                   </figure>
                 </div>
