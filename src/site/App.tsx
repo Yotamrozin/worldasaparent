@@ -1267,10 +1267,9 @@ function NayakaProject() {
         <h3 style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(1.3rem, 2.2vw, 1.9rem)", color: "white", lineHeight: 1.4, marginBottom: "2rem" }}>
           Nayaka <span style={{ fontWeight: 400, opacity: 0.7 }}>(in development)</span>
         </h3>
-        <BunnyVideo id="3216f3e0-687c-4200-a5c2-7b4e86caa39b" title="Nayaka: screen capture of the game" aspect="1912/1078" />
       </FadeUp>
 
-      <div className="mt-16 grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
         <FadeUp className="lg:col-span-3">
           <p style={textStyle}>
             Nayaka is an experimental video game that reimagines the keyboard and immerses the player in a poetic, meditative loop. Instead of pressing a key to send a character left or right, players move their own hand across the keyboard, from left to right or from bottom to top. Each being in the game needs its own rhythm, so players have to listen, and slowly learn how to move with it.
@@ -1286,6 +1285,10 @@ function NayakaProject() {
           <BunnyVideo id="f88ee645-6762-4c7f-811c-dd6babadcdad" title="Nayaka: hand-drawn fire and bat animation" aspect="630/1044" />
         </FadeUp>
       </div>
+
+      <FadeUp className="mt-16">
+        <BunnyVideo id="3216f3e0-687c-4200-a5c2-7b4e86caa39b" title="Nayaka: screen capture of the game" aspect="1912/1078" />
+      </FadeUp>
 
       <div className="mt-12 grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
         <FadeUp className="md:col-span-4">
