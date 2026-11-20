@@ -24,3 +24,6 @@ next-env.d.ts
 
 # ShipStudio metadata
 .shipstudio/
+
+# Raw media dropped in for conversion (originals stay out of the repo)
+/_incoming/
