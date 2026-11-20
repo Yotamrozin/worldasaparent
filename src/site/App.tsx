@@ -1241,10 +1241,10 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
 const NAYAKA_BUNNY = "https://iframe.mediadelivery.net/embed/504938";
 const nayakaWalkCycle = "/imports/04bNayaka/nayaka-walk-cycle.gif";
 
-// Bunny player. Loops autoplay muted (unless reduced motion is on); the main film waits for play.
-function BunnyVideo({ id, title, aspect, loop = false }: { id: string; title: string; aspect: string; loop?: boolean }) {
+// Bunny player: silent loop that autoplays muted (unless reduced motion is on); Bunny's controls allow pausing.
+function BunnyVideo({ id, title, aspect }: { id: string; title: string; aspect: string }) {
   const reduceMotion = useReducedMotion();
-  const params = loop ? `?autoplay=${!reduceMotion}&loop=true&muted=true&preload=true` : "?autoplay=false&preload=false";
+  const params = `?autoplay=${!reduceMotion}&loop=true&muted=true&preload=true`;
   return (
     <div className="w-full overflow-hidden bg-black" style={{ aspectRatio: aspect }}>
       <iframe
@@ -1267,7 +1267,7 @@ function NayakaProject() {
         <h3 style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(1.3rem, 2.2vw, 1.9rem)", color: "white", lineHeight: 1.4, marginBottom: "2rem" }}>
           Nayaka <span style={{ fontWeight: 400, opacity: 0.7 }}>(in development)</span>
         </h3>
-        <BunnyVideo id="62294d3c-4182-444d-b368-fafd2850c3ec" title="Nayaka, video" aspect="16/9" />
+        <BunnyVideo id="3216f3e0-687c-4200-a5c2-7b4e86caa39b" title="Nayaka: screen capture of the game" aspect="1912/1078" />
       </FadeUp>
 
       <div className="mt-16 grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
@@ -1283,13 +1283,13 @@ function NayakaProject() {
           </p>
         </FadeUp>
         <FadeUp delay={0.15} className="lg:col-span-2 w-full max-w-[340px] mx-auto">
-          <BunnyVideo id="f88ee645-6762-4c7f-811c-dd6babadcdad" title="Nayaka: hand-drawn fire and bat animation" aspect="630/1044" loop />
+          <BunnyVideo id="f88ee645-6762-4c7f-811c-dd6babadcdad" title="Nayaka: hand-drawn fire and bat animation" aspect="630/1044" />
         </FadeUp>
       </div>
 
       <div className="mt-12 grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
         <FadeUp className="md:col-span-4">
-          <BunnyVideo id="27470878-e37a-4d1f-b8c7-89e4d1e2832f" title="Nayaka: a hand-drawn jackal being animated in animation software" aspect="1920/900" loop />
+          <BunnyVideo id="27470878-e37a-4d1f-b8c7-89e4d1e2832f" title="Nayaka: a hand-drawn jackal being animated in animation software" aspect="1920/900" />
         </FadeUp>
         <FadeUp delay={0.15} className="md:col-span-1 flex justify-center">
           {/* Inverted so the drawing reads as white line on black, like the other Nayaka artwork */}
