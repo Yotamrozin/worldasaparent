@@ -1221,6 +1221,8 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
             ))}
           </div>
         </FadeUp>
+
+        <NayakaProject />
       </div>
 
       <Lightbox
@@ -1230,6 +1232,79 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
         onClose={() => setLightboxOpen(false)}
       />
     </section>
+  );
+}
+
+// ============================================================
+// NAYAKA — second project under Notable Artistic Practice
+// ============================================================
+const NAYAKA_BUNNY = "https://iframe.mediadelivery.net/embed/504938";
+const nayakaWalkCycle = "/imports/04bNayaka/nayaka-walk-cycle.webp";
+
+// Bunny player. Loops autoplay muted (unless reduced motion is on); the main film waits for play.
+function BunnyVideo({ id, title, aspect, loop = false }: { id: string; title: string; aspect: string; loop?: boolean }) {
+  const reduceMotion = useReducedMotion();
+  const params = loop ? `?autoplay=${!reduceMotion}&loop=true&muted=true&preload=true` : "?autoplay=false&preload=false";
+  return (
+    <div className="w-full overflow-hidden bg-black" style={{ aspectRatio: aspect }}>
+      <iframe
+        className="w-full h-full"
+        src={`${NAYAKA_BUNNY}/${id}${params}`}
+        title={title}
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    </div>
+  );
+}
+
+function NayakaProject() {
+  const textStyle: React.CSSProperties = { fontFamily: BODY, fontSize: "clamp(0.9rem, 1.2vw, 1.1rem)", color: "white", lineHeight: 1.6, marginBottom: "1.25rem" };
+  return (
+    <div className="mt-24 pt-20 border-t border-white/15">
+      <FadeUp>
+        <h3 style={{ fontFamily: BRAND, fontWeight: 600, fontSize: "clamp(1.3rem, 2.2vw, 1.9rem)", color: "white", lineHeight: 1.4, marginBottom: "2rem" }}>
+          Nayaka <span style={{ fontWeight: 400, opacity: 0.7 }}>(in development)</span>
+        </h3>
+        <BunnyVideo id="62294d3c-4182-444d-b368-fafd2850c3ec" title="Nayaka, video" aspect="16/9" />
+      </FadeUp>
+
+      <div className="mt-16 grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
+        <FadeUp className="lg:col-span-3">
+          <p style={textStyle}>
+            Nayaka is an experimental video game that reimagines the keyboard and immerses the player in a poetic, meditative loop. Instead of pressing a key to send a character left or right, players move their own hand across the keyboard, from left to right or from bottom to top. Each being in the game needs its own rhythm, so players have to listen, and slowly learn how to move with it.
+          </p>
+          <p style={textStyle}>
+            As in a Contact Improvisation dance, where two bodies find each other through touch and weight, the tactility of the keys and the constant negotiation with another being extend sensitivity beyond the skin. The player’s sense of self emerges through relation and interaction.
+          </p>
+          <p style={{ ...textStyle, marginBottom: 0 }}>
+            Nayaka was first created as a Master’s project in the Media, Art and Performance Studies programme at Utrecht University and is now an ongoing project in its prototype phase. It is inspired by Contact Improvisation and by anthropologist Nurit Bird-David’s ethnography of the Nayaka people of South India, and their relational understanding of personhood. The game lets a sense of materiality follow from an embodied practice.
+          </p>
+        </FadeUp>
+        <FadeUp delay={0.15} className="lg:col-span-2 w-full max-w-[340px] mx-auto">
+          <BunnyVideo id="f88ee645-6762-4c7f-811c-dd6babadcdad" title="Nayaka: hand-drawn fire and bat animation" aspect="630/1044" loop />
+        </FadeUp>
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
+        <FadeUp className="md:col-span-4">
+          <BunnyVideo id="27470878-e37a-4d1f-b8c7-89e4d1e2832f" title="Nayaka: a hand-drawn jackal being animated in animation software" aspect="1920/900" loop />
+        </FadeUp>
+        <FadeUp delay={0.15} className="md:col-span-1 flex justify-center">
+          {/* Inverted so the drawing reads as white line on black, like the other Nayaka artwork */}
+          <img
+            src={nayakaWalkCycle}
+            alt="Hand-drawn animated loop of a walking figure that keeps changing from one being into another."
+            width={220}
+            height={417}
+            loading="lazy"
+            decoding="async"
+            className="w-full max-w-[160px] h-auto invert"
+          />
+        </FadeUp>
+      </div>
+    </div>
   );
 }
 
