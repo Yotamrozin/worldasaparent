@@ -1239,7 +1239,7 @@ function HomescapeSection({ scrollY }: { scrollY: number }) {
 // NAYAKA — second project under Notable Artistic Practice
 // ============================================================
 const NAYAKA_BUNNY = "https://iframe.mediadelivery.net/embed/504938";
-const nayakaWalkCycle = "/imports/04bNayaka/nayaka-walk-cycle.webp";
+const nayakaWalkCycle = "/imports/04bNayaka/nayaka-walk-cycle.gif";
 
 // Bunny player. Loops autoplay muted (unless reduced motion is on); the main film waits for play.
 function BunnyVideo({ id, title, aspect, loop = false }: { id: string; title: string; aspect: string; loop?: boolean }) {
